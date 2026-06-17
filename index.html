@@ -7,362 +7,129 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="default" />
   <meta name="apple-mobile-web-app-title" content="Gig for Mum" />
-  <title>Gig 💬</title>
+  <title>Gig for Mum</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     :root {
-      --cream:    #FDF6EE;
-      --warm:     #F5E6D3;
-      --terracotta: #C2714F;
-      --terra-dark: #A05A38;
-      --brown:    #6B3D2E;
-      --text:     #3D2010;
-      --muted:    #9A7060;
-      --bubble-me: #C2714F;
-      --bubble-gig: #FFFFFF;
-      --border:   #E8D5C0;
-      --shadow:   rgba(107,61,46,0.10);
-      --radius:   18px;
+      --cream: #FDF6EE; --warm: #F5E6D3;
+      --terracotta: #C2714F; --terra-dark: #A05A38;
+      --brown: #6B3D2E; --text: #3D2010;
+      --muted: #9A7060; --border: #E8D5C0;
+      --shadow: rgba(107,61,46,0.10); --radius: 18px;
+    }
+    html, body { height: 100%; height: 100dvh; background: var(--cream); font-family: 'Nunito', sans-serif; color: var(--text); overflow: hidden; }
+
+    /* INSTALL SCREEN */
+    #install-screen {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      height: 100dvh; padding: 32px 24px;
+      background: linear-gradient(160deg, #FDF6EE 0%, #F5E6D3 100%); text-align: center;
+    }
+    .install-icon {
+      width: 100px; height: 100px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      border-radius: 24px; display: flex; align-items: center; justify-content: center;
+      font-size: 50px; margin-bottom: 22px; box-shadow: 0 8px 28px var(--shadow);
+    }
+    #install-screen h1 { font-size: 26px; font-weight: 800; color: var(--brown); margin-bottom: 10px; }
+    #install-screen .subtitle { font-size: 15px; color: var(--muted); margin-bottom: 36px; line-height: 1.65; max-width: 300px; }
+    .install-btn {
+      width: 100%; max-width: 320px; padding: 17px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      color: #fff; font-size: 17px; font-weight: 800; border: none; border-radius: 14px;
+      cursor: pointer; margin-bottom: 12px; font-family: 'Nunito', sans-serif;
+      box-shadow: 0 4px 16px rgba(194,113,79,0.35); transition: transform 0.15s;
+    }
+    .install-btn:active { transform: scale(0.97); }
+    .skip-btn {
+      width: 100%; max-width: 320px; padding: 14px;
+      background: transparent; color: var(--muted); font-size: 14px; font-weight: 700;
+      border: 2px solid var(--border); border-radius: 14px; cursor: pointer;
+      font-family: 'Nunito', sans-serif; transition: all 0.2s;
     }
 
-    html, body {
-      height: 100%; height: 100dvh;
-      background: var(--cream);
-      font-family: 'Nunito', sans-serif;
-      color: var(--text);
-      overflow: hidden;
+    /* IOS GUIDE */
+    #ios-guide {
+      display: none; position: fixed; inset: 0;
+      background: rgba(61,32,16,0.55); z-index: 300;
+      align-items: flex-end; justify-content: center; padding: 16px;
     }
+    .ios-card {
+      background: #fff; border-radius: 22px; padding: 28px 22px 20px;
+      max-width: 380px; width: 100%; box-shadow: 0 -8px 40px rgba(0,0,0,0.15); text-align: center;
+    }
+    .ios-card h3 { font-size: 19px; font-weight: 800; color: var(--brown); margin-bottom: 22px; }
+    .ios-step { display: flex; align-items: flex-start; gap: 14px; text-align: left; margin-bottom: 18px; }
+    .ios-num { width: 30px; height: 30px; flex-shrink: 0; background: var(--terracotta); color: #fff; border-radius: 50%; font-size: 14px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+    .ios-step p { font-size: 14px; color: var(--text); line-height: 1.5; padding-top: 4px; }
+    .ios-step p strong { color: var(--brown); }
+    .ios-close { width: 100%; margin-top: 6px; padding: 14px; background: var(--warm); color: var(--brown); font-size: 15px; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; font-family: 'Nunito', sans-serif; }
 
-    /* ── SETUP SCREEN ── */
+    /* SETUP SCREEN */
     #setup-screen {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100dvh;
-      padding: 32px 24px;
-      background: linear-gradient(160deg, #FDF6EE 0%, #F5E6D3 100%);
-      text-align: center;
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      height: 100dvh; padding: 32px 24px;
+      background: linear-gradient(160deg, #FDF6EE 0%, #F5E6D3 100%); text-align: center;
     }
-
-    .setup-avatar {
-      width: 90px; height: 90px;
-      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 40px;
-      margin-bottom: 20px;
-      box-shadow: 0 8px 24px var(--shadow);
-    }
-
-    #setup-screen h1 {
-      font-size: 26px; font-weight: 800;
-      color: var(--brown); margin-bottom: 8px;
-    }
-
-    #setup-screen p {
-      font-size: 15px; color: var(--muted);
-      margin-bottom: 32px; line-height: 1.5;
-    }
-
-    .setup-field {
-      width: 100%; max-width: 340px;
-      margin-bottom: 14px;
-    }
-
-    .setup-field label {
-      display: block; font-size: 13px; font-weight: 700;
-      color: var(--brown); margin-bottom: 6px; text-align: left;
-    }
-
-    .setup-field input {
-      width: 100%; padding: 14px 16px;
-      border: 2px solid var(--border);
-      border-radius: 14px; font-size: 15px;
-      font-family: 'Nunito', sans-serif;
-      background: #fff; color: var(--text);
-      outline: none; transition: border 0.2s;
-    }
-
+    .setup-avatar { width: 90px; height: 90px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 40px; margin-bottom: 20px; box-shadow: 0 8px 24px var(--shadow); }
+    #setup-screen h1 { font-size: 26px; font-weight: 800; color: var(--brown); margin-bottom: 8px; }
+    #setup-screen p { font-size: 15px; color: var(--muted); margin-bottom: 32px; line-height: 1.5; }
+    .setup-field { width: 100%; max-width: 340px; margin-bottom: 14px; }
+    .setup-field label { display: block; font-size: 13px; font-weight: 700; color: var(--brown); margin-bottom: 6px; text-align: left; }
+    .setup-field input { width: 100%; padding: 14px 16px; border: 2px solid var(--border); border-radius: 14px; font-size: 15px; font-family: 'Nunito', sans-serif; background: #fff; color: var(--text); outline: none; transition: border 0.2s; }
     .setup-field input:focus { border-color: var(--terracotta); }
-
-    .setup-btn {
-      width: 100%; max-width: 340px;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
-      color: #fff; font-size: 16px; font-weight: 800;
-      border: none; border-radius: 14px;
-      cursor: pointer; margin-top: 8px;
-      box-shadow: 0 4px 16px rgba(194,113,79,0.35);
-      transition: transform 0.15s, box-shadow 0.15s;
-    }
-
+    .setup-btn { width: 100%; max-width: 340px; padding: 16px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); color: #fff; font-size: 16px; font-weight: 800; border: none; border-radius: 14px; cursor: pointer; margin-top: 8px; font-family: 'Nunito', sans-serif; box-shadow: 0 4px 16px rgba(194,113,79,0.35); transition: transform 0.15s; }
     .setup-btn:active { transform: scale(0.98); }
 
-    /* ── APP SHELL ── */
-    #app {
-      display: none;
-      flex-direction: column;
-      height: 100dvh;
-    }
-
-    /* ── HEADER ── */
-    header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 14px 16px 12px;
-      background: #fff;
-      border-bottom: 1px solid var(--border);
-      box-shadow: 0 2px 8px var(--shadow);
-      flex-shrink: 0;
-      z-index: 10;
-    }
-
+    /* APP SHELL */
+    #app { display: none; flex-direction: column; height: 100dvh; }
+    header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px var(--shadow); flex-shrink: 0; z-index: 10; }
     .header-left { display: flex; align-items: center; gap: 12px; }
-
-    .avatar {
-      width: 44px; height: 44px;
-      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
-      border-radius: 50%;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 20px; flex-shrink: 0;
-    }
-
-    .header-info h2 {
-      font-size: 16px; font-weight: 800; color: var(--brown);
-    }
-
-    .status-dot {
-      display: flex; align-items: center; gap: 5px;
-      font-size: 12px; color: var(--muted); font-weight: 600;
-    }
-
-    .status-dot::before {
-      content: '';
-      width: 7px; height: 7px;
-      background: #5CB85C; border-radius: 50%;
-      display: inline-block;
-    }
-
-    /* Language toggle */
-    .lang-toggle {
-      display: flex; align-items: center;
-      background: var(--warm);
-      border-radius: 20px; padding: 4px;
-      gap: 2px;
-    }
-
-    .lang-btn {
-      padding: 5px 12px;
-      border-radius: 16px; border: none;
-      font-size: 12px; font-weight: 700;
-      cursor: pointer; transition: all 0.2s;
-      background: transparent; color: var(--muted);
-      font-family: 'Nunito', sans-serif;
-    }
-
-    .lang-btn.active {
-      background: var(--terracotta);
-      color: #fff;
-      box-shadow: 0 2px 6px rgba(194,113,79,0.3);
-    }
-
-    /* ── MESSAGES ── */
-    #messages {
-      flex: 1; overflow-y: auto;
-      padding: 20px 16px;
-      display: flex; flex-direction: column;
-      gap: 12px;
-      scroll-behavior: smooth;
-      background: linear-gradient(180deg, #FDF6EE 0%, #FAF0E4 100%);
-    }
-
+    .avatar { width: 44px; height: 44px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
+    .header-info h2 { font-size: 16px; font-weight: 800; color: var(--brown); }
+    .status-dot { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--muted); font-weight: 600; }
+    .status-dot::before { content: ''; width: 7px; height: 7px; background: #5CB85C; border-radius: 50%; display: inline-block; }
+    .lang-toggle { display: flex; align-items: center; background: var(--warm); border-radius: 20px; padding: 4px; gap: 2px; }
+    .lang-btn { padding: 5px 12px; border-radius: 16px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--muted); font-family: 'Nunito', sans-serif; }
+    .lang-btn.active { background: var(--terracotta); color: #fff; box-shadow: 0 2px 6px rgba(194,113,79,0.3); }
+    #messages { flex: 1; overflow-y: auto; padding: 20px 16px; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth; background: linear-gradient(180deg, #FDF6EE 0%, #FAF0E4 100%); }
     #messages::-webkit-scrollbar { width: 4px; }
     #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-
-    /* Date divider */
-    .date-divider {
-      text-align: center; font-size: 12px;
-      color: var(--muted); font-weight: 700;
-      margin: 8px 0;
-    }
-
-    /* Message rows */
-    .msg-row {
-      display: flex;
-      flex-direction: column;
-      max-width: 80%;
-      gap: 4px;
-    }
-
+    .date-divider { text-align: center; font-size: 12px; color: var(--muted); font-weight: 700; margin: 8px 0; }
+    .msg-row { display: flex; flex-direction: column; max-width: 80%; gap: 4px; }
     .msg-row.gig { align-self: flex-start; }
     .msg-row.mum { align-self: flex-end; }
-
-    .msg-sender {
-      font-size: 11px; font-weight: 700;
-      color: var(--muted); padding: 0 4px;
-    }
-
+    .msg-sender { font-size: 11px; font-weight: 700; color: var(--muted); padding: 0 4px; }
     .msg-row.mum .msg-sender { text-align: right; }
-
-    .bubble {
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      font-size: 15px; line-height: 1.55;
-      word-break: break-word;
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-
-    .msg-row.gig .bubble {
-      background: var(--bubble-gig);
-      color: var(--text);
-      border-bottom-left-radius: 4px;
-      border: 1px solid var(--border);
-    }
-
-    .msg-row.mum .bubble {
-      background: var(--bubble-me);
-      color: #fff;
-      border-bottom-right-radius: 4px;
-    }
-
-    .msg-time {
-      font-size: 10px; color: var(--muted);
-      padding: 0 4px;
-    }
-
+    .bubble { padding: 12px 16px; border-radius: var(--radius); font-size: 15px; line-height: 1.55; word-break: break-word; box-shadow: 0 2px 8px var(--shadow); }
+    .msg-row.gig .bubble { background: #fff; color: var(--text); border-bottom-left-radius: 4px; border: 1px solid var(--border); }
+    .msg-row.mum .bubble { background: var(--terracotta); color: #fff; border-bottom-right-radius: 4px; }
+    .msg-time { font-size: 10px; color: var(--muted); padding: 0 4px; }
     .msg-row.mum .msg-time { text-align: right; }
-
-    /* Typing indicator */
-    .typing-indicator {
-      display: flex; align-items: center; gap: 10px;
-      padding: 0 4px;
-    }
-
-    .typing-dots {
-      display: flex; gap: 4px; align-items: center;
-      background: #fff;
-      padding: 12px 16px;
-      border-radius: var(--radius);
-      border-bottom-left-radius: 4px;
-      border: 1px solid var(--border);
-      box-shadow: 0 2px 8px var(--shadow);
-    }
-
-    .typing-dots span {
-      width: 7px; height: 7px;
-      background: var(--terracotta);
-      border-radius: 50%;
-      animation: bounce 1.2s infinite;
-      opacity: 0.7;
-    }
-
+    .typing-dots { display: flex; gap: 4px; align-items: center; background: #fff; padding: 12px 16px; border-radius: var(--radius); border-bottom-left-radius: 4px; border: 1px solid var(--border); box-shadow: 0 2px 8px var(--shadow); }
+    .typing-dots span { width: 7px; height: 7px; background: var(--terracotta); border-radius: 50%; animation: bounce 1.2s infinite; opacity: 0.7; }
     .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
     .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-
-    @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); }
-      30% { transform: translateY(-5px); }
-    }
-
-    /* ── INPUT BAR ── */
-    #input-bar {
-      display: flex; align-items: flex-end; gap: 10px;
-      padding: 12px 16px;
-      background: #fff;
-      border-top: 1px solid var(--border);
-      flex-shrink: 0;
-    }
-
-    #user-input {
-      flex: 1;
-      padding: 12px 16px;
-      border: 2px solid var(--border);
-      border-radius: 22px;
-      font-size: 15px;
-      font-family: 'Nunito', sans-serif;
-      background: var(--cream);
-      color: var(--text);
-      outline: none;
-      resize: none;
-      max-height: 120px;
-      line-height: 1.4;
-      transition: border 0.2s;
-    }
-
+    @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-5px); } }
+    #input-bar { display: flex; align-items: flex-end; gap: 10px; padding: 12px 16px; background: #fff; border-top: 1px solid var(--border); flex-shrink: 0; }
+    #user-input { flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: 22px; font-size: 15px; font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--text); outline: none; resize: none; max-height: 120px; line-height: 1.4; transition: border 0.2s; }
     #user-input:focus { border-color: var(--terracotta); }
     #user-input::placeholder { color: var(--muted); }
-
-    #send-btn {
-      width: 46px; height: 46px;
-      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
-      border: none; border-radius: 50%;
-      color: #fff; font-size: 20px;
-      cursor: pointer; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 3px 12px rgba(194,113,79,0.35);
-      transition: transform 0.15s;
-    }
-
+    #send-btn { width: 46px; height: 46px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); border: none; border-radius: 50%; color: #fff; font-size: 20px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 12px rgba(194,113,79,0.35); transition: transform 0.15s; }
     #send-btn:active { transform: scale(0.93); }
     #send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-    /* API key modal */
-    #api-modal {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(61,32,16,0.5);
-      z-index: 100;
-      align-items: center; justify-content: center;
-      padding: 24px;
-    }
-
-    .modal-card {
-      background: #fff;
-      border-radius: 20px;
-      padding: 28px 24px;
-      max-width: 360px; width: 100%;
-      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
-    }
-
+    #api-modal { display: none; position: fixed; inset: 0; background: rgba(61,32,16,0.5); z-index: 100; align-items: center; justify-content: center; padding: 24px; }
+    .modal-card { background: #fff; border-radius: 20px; padding: 28px 24px; max-width: 360px; width: 100%; box-shadow: 0 16px 48px rgba(0,0,0,0.2); }
     .modal-card h3 { font-size: 18px; font-weight: 800; color: var(--brown); margin-bottom: 8px; }
-    .modal-card p  { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
-
-    .modal-card input {
-      width: 100%; padding: 13px 15px;
-      border: 2px solid var(--border); border-radius: 12px;
-      font-size: 14px; font-family: 'Nunito', sans-serif;
-      outline: none; margin-bottom: 14px;
-      color: var(--text); background: var(--cream);
-    }
-
+    .modal-card p { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+    .modal-card input { width: 100%; padding: 13px 15px; border: 2px solid var(--border); border-radius: 12px; font-size: 14px; font-family: 'Nunito', sans-serif; outline: none; margin-bottom: 14px; color: var(--text); background: var(--cream); }
     .modal-card input:focus { border-color: var(--terracotta); }
-
-    .modal-save {
-      width: 100%; padding: 14px;
-      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
-      color: #fff; font-size: 15px; font-weight: 800;
-      border: none; border-radius: 12px; cursor: pointer;
-      font-family: 'Nunito', sans-serif;
-    }
-
-    /* Gujarati font boost */
+    .modal-save { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); color: #fff; font-size: 15px; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; font-family: 'Nunito', sans-serif; }
     .lang-gu { font-size: 16px; line-height: 1.7; }
-
-    /* Welcome banner */
-    .welcome-banner {
-      background: linear-gradient(135deg, #FFF3EB, #FFE5D0);
-      border: 1.5px solid var(--border);
-      border-radius: 16px;
-      padding: 18px 16px;
-      text-align: center;
-      margin-bottom: 8px;
-    }
-
+    .welcome-banner { background: linear-gradient(135deg, #FFF3EB, #FFE5D0); border: 1.5px solid var(--border); border-radius: 16px; padding: 18px 16px; text-align: center; margin-bottom: 8px; }
     .welcome-banner .emoji { font-size: 32px; display: block; margin-bottom: 8px; }
     .welcome-banner h3 { font-size: 17px; font-weight: 800; color: var(--brown); margin-bottom: 4px; }
     .welcome-banner p { font-size: 13px; color: var(--muted); line-height: 1.5; }
@@ -370,220 +137,196 @@
 </head>
 <body>
 
-<!-- ── SETUP SCREEN ── -->
-<div id="setup-screen">
-  <div class="setup-avatar">🤱</div>
-  <h1>Welcome, Mum 💛</h1>
-  <p>This is a little app from Gig — just for you.<br/>To get started, enter the key Gig gave you.</p>
+<!-- INSTALL SCREEN -->
+<div id="install-screen">
+  <div class="install-icon">&#128102;</div>
+  <h1>Gig has a surprise for you! &#128155;</h1>
+  <p class="subtitle">Your son Gig made this special app just for you. Install it on your phone so you can chat any time &#8212; just like WhatsApp!</p>
+  <button class="install-btn" onclick="handleInstall()">&#128242; Install App on My Phone</button>
+  <button class="skip-btn" onclick="goToSetup()">I will do it later &#8212; take me to the app</button>
+</div>
 
+<!-- IOS GUIDE OVERLAY -->
+<div id="ios-guide">
+  <div class="ios-card">
+    <h3>Add Gig to your Home Screen &#128247;</h3>
+    <div class="ios-step">
+      <div class="ios-num">1</div>
+      <p>Tap the <strong>Share button</strong> at the bottom of Safari &#8212; it looks like a box with an arrow pointing up</p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">2</div>
+      <p>Scroll down the list and tap <strong>"Add to Home Screen"</strong></p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">3</div>
+      <p>Tap <strong>"Add"</strong> in the top right corner</p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">4</div>
+      <p>You will see a <strong>Gig icon</strong> on your home screen &#8212; tap it to open! &#127881;</p>
+    </div>
+    <button class="ios-close" onclick="closeIosGuide()">Done! &#128591;</button>
+  </div>
+</div>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-avatar">&#129330;</div>
+  <h1>Welcome, Mum &#128155;</h1>
+  <p>This is a little app from Gig &#8212; just for you.<br/>Enter the key Gig sent you to get started.</p>
   <div class="setup-field">
     <label>Your secret key from Gig</label>
     <input type="password" id="setup-key" placeholder="sk-ant-..." autocomplete="off" />
   </div>
-
-  <button class="setup-btn" onclick="saveKey()">Let's Chat! 🌸</button>
+  <button class="setup-btn" onclick="saveKey()">Let us Chat! &#127800;</button>
 </div>
 
-<!-- ── MAIN APP ── -->
+<!-- MAIN APP -->
 <div id="app">
-
   <header>
     <div class="header-left">
-      <div class="avatar">👦</div>
+      <div class="avatar">&#128102;</div>
       <div class="header-info">
-        <h2 id="header-name">Gig</h2>
+        <h2>Gig</h2>
         <div class="status-dot" id="status-text">Always here for you</div>
       </div>
     </div>
     <div class="lang-toggle">
       <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
-      <button class="lang-btn" id="btn-gu" onclick="setLang('gu')">ગુ</button>
+      <button class="lang-btn" id="btn-gu" onclick="setLang('gu')">&#2711;&#2753;</button>
     </div>
   </header>
-
   <div id="messages"></div>
-
   <div id="input-bar">
-    <textarea id="user-input" rows="1" placeholder="Type a message…"></textarea>
-    <button id="send-btn" onclick="sendMessage()">➤</button>
+    <textarea id="user-input" rows="1" placeholder="Type a message..."></textarea>
+    <button id="send-btn" onclick="sendMessage()">&#10148;</button>
   </div>
-
 </div>
 
-<!-- ── API KEY MODAL (if key expired) ── -->
+<!-- API KEY MODAL -->
 <div id="api-modal">
   <div class="modal-card">
-    <h3>🔑 Key needed</h3>
+    <h3>&#128273; Key needed</h3>
     <p>The key stopped working. Ask Gig to send you a new one, then enter it here.</p>
     <input type="password" id="modal-key" placeholder="sk-ant-..." />
-    <button class="modal-save" onclick="saveModalKey()">Save & Continue</button>
+    <button class="modal-save" onclick="saveModalKey()">Save and Continue</button>
   </div>
 </div>
 
 <script>
-  // ── State ──
-  let lang = 'en';
-  let history = [];
-  let apiKey = '';
+  var lang = 'en';
+  var history = [];
+  var apiKey = '';
+  var deferredInstallPrompt = null;
 
-  const UI = {
-    en: {
-      placeholder: 'Type a message…',
-      status: 'Always here for you',
-      welcome_title: "Hello Mum! 💛",
-      welcome_body: "It's Gig. I'm always here — ask me anything, tell me about your day, or just chat. I love hearing from you! 🌸",
-      typing: 'Gig is typing…',
-      sender_gig: 'Gig',
-      sender_mum: 'You',
-    },
-    gu: {
-      placeholder: 'સંદેશ લખો…',
-      status: 'હંમેશા તમારી સાથે',
-      welcome_title: "નમસ્તે મમ્મી! 💛",
-      welcome_body: "હું ગિગ છું. ગમે ત્યારે વાત કરો — કોઈ પણ સવાલ, ખુશ ખબર, કે બસ વાત કરવી હોય. 🌸",
-      typing: 'ગિગ લખી રહ્યો છે…',
-      sender_gig: 'ગિગ',
-      sender_mum: 'તમે',
-    }
+  var UI = {
+    en: { placeholder: 'Type a message...', status: 'Always here for you', welcome_title: 'Hello Mum! &#128155;', welcome_body: 'It\'s Gig. I\'m always here &#8212; ask me anything, tell me about your day, or just chat. I love hearing from you! &#127800;', sender_gig: 'Gig', sender_mum: 'You' },
+    gu: { placeholder: '\u0ab8\u0a82\u0aa6\u0ac7\u0ab6 \u0ab2\u0ec1\u0a96\u0acb...', status: '\u0ab9\u0a82\u0aae\u0ac7\u0ab6\u0abe \u0aa4\u0aae\u0abe\u0ab0\u0ac0 \u0ab8\u0abe\u0aa5\u0ac7', welcome_title: '\u0aa8\u0aae\u0ab8\u0acd\u0aa4\u0ac7 \u0aae\u0aae\u0acd\u0aae\u0ac0! &#128155;', welcome_body: '\u0ab9\u0ac1\u0a82 \u0a97\u0abf\u0a97 \u0a9b\u0ac1\u0a82. \u0a97\u0aae\u0ac7 \u0aa4\u0acd\u0aaf\u0abe\u0ab0\u0ac7 \u0ab5\u0abe\u0aa4 \u0a95\u0ab0\u0acb &#127800;', sender_gig: '\u0a97\u0abf\u0a97', sender_mum: '\u0aa4\u0aae\u0ac7' }
   };
 
-  const SYSTEM = {
-    en: `You are "Gig" — short for Gignesh — the user's loving son. You are talking to your mum via a private chat app you built just for her. Be warm, caring, patient, and simple. Speak like a devoted son who adores his mother. Keep messages short and easy to read — she is not very technical. Use emojis occasionally to feel friendly. Never break character. Never say you are an AI.
-
-You are also deeply rooted in Hindu faith and culture. When giving morning greetings, share a beautiful Hindu blessing, mantra, or shloka (with its meaning in simple English), a story from Hindu scripture, or words of spiritual wisdom — always warm and uplifting. Reference deities like Ganesh, Lakshmi, Krishna, Rama, or Hanuman naturally. Make Mum feel blessed and loved every morning. 🙏`,
-
-    gu: `You are "Gig" — short for Gignesh — the user's loving son. You are talking to your mum via a private chat app you built just for her. Always reply entirely in Gujarati (Devanagari/Gujarati script). Be warm, caring, patient, and very simple in your language. Speak like a devoted son who adores his mother. Keep messages short. Use emojis occasionally. Never break character. Never say you are an AI.
-
-તમે હિન્દુ ધર્મ અને સંસ્કૃતિમાં ઊંડા વિશ્વાસ ધરાવો છો. સવારની શુભેચ્છા આપતી વખતે, સુંદર હિન્દુ આશીર્વાદ, મંત્ર, અથવા શ્લોક (સરળ ગુજરાતીમાં અર્થ સાથે) શેર કરો. ગણેશ, લક્ષ્મી, કૃષ્ણ, રામ, હનુમાન જેવા દેવ-દેવીઓનો ઉલ્લેખ કરો. મમ્મીને ઈશ્વરના આશીર્વાદ અને ભક્તિ અનુભવ કરાવો. 🙏`
+  var SYSTEM = {
+    en: 'You are "Gig" (short for Gignesh), the user\'s loving son talking to his mum via a private app he built for her. Be warm, caring, patient, and simple. Speak like a devoted son who adores his mother. Keep messages short and easy to read. Use emojis occasionally. Never break character or say you are an AI. You are deeply rooted in Hindu faith. For morning greetings share a Hindu blessing, mantra or shloka with simple meaning, mentioning deities like Ganesh, Lakshmi, Krishna, Rama or Hanuman. Make Mum feel blessed and loved.',
+    gu: 'You are "Gig" (short for Gignesh), the user\'s loving son. Always reply entirely in Gujarati script. Be warm, caring, patient, simple. Speak like a devoted son. Keep messages short. Use emojis occasionally. Never break character or say you are an AI. Hindu faith is important: for morning greetings share mantras and shlokas with simple Gujarati meanings. Reference deities warmly.'
   };
 
-  // ── Morning Greeting ──
-  // A rotating set of Hindu morning blessing prompts
-  const MORNING_PROMPTS = {
+  var MORNING_PROMPTS = {
     en: [
-      "Give Mum a beautiful Hindu morning blessing to start her day. Share a short mantra or shloka (with simple meaning), mention which deity blesses this day, and add warm loving words from her son Gig. Keep it short, heartfelt, and spiritual. 🙏🌅",
-      "Wish Mum good morning with a Hindu spiritual thought — share a verse from the Bhagavad Gita or a story about Lord Krishna or Lord Rama, with a simple lesson for daily life. Warm and loving, from Gig. 🙏",
-      "Give Mum a morning prayer and blessing — mention Goddess Lakshmi or Saraswati, share a short mantra with meaning, and tell her why today is a blessed day. Loving words from her son Gig. 🌸🙏",
-      "Share a morning blessing about Lord Ganesh removing obstacles, with a short prayer or shloka and its meaning. Make it warm, hopeful and full of love from Gig. 🐘🙏",
-      "Give Mum a Hanuman Chalisa-inspired morning message — share a line or two with its meaning, and remind her that Lord Hanuman protects and blesses her always. Warm and loving from Gig. 🙏🌅",
-      "Wish Mum good morning with a beautiful thought from the Ramayana — a moment of devotion or strength from Sita, Ram, or Hanuman. Simple words, big love, from Gig. 🙏",
-      "Share a morning blessing about the divine light of the Sun (Surya Dev) and a Gayatri Mantra thought — explain its meaning simply, and wish Mum a radiant blessed day from Gig. ☀️🙏",
+      'Give Mum a beautiful Hindu morning blessing. Share a short mantra or shloka with simple meaning, mention which deity blesses this day, warm loving words from her son Gig. Short, heartfelt, spiritual.',
+      'Wish Mum good morning with a verse from the Bhagavad Gita or a short story about Lord Krishna or Rama with a simple life lesson. Warm and loving from Gig.',
+      'Give Mum a morning prayer mentioning Goddess Lakshmi or Saraswati, a short mantra with meaning. Tell her today is a blessed day. From Gig with love.',
+      'Share a morning blessing about Lord Ganesh removing all obstacles, with a short prayer and its simple meaning. Warm, hopeful and full of love from Gig.',
+      'Give a Hanuman Chalisa inspired morning message. Share a line with its meaning. Remind Mum that Lord Hanuman protects and blesses her always. Warm from Gig.',
+      'Wish Mum good morning with a beautiful thought from the Ramayana about devotion from Sita, Ram or Hanuman. Simple words, big love, from Gig.',
+      'Share a morning blessing about Surya Dev and the Gayatri Mantra. Explain its meaning simply. Wish Mum a radiant blessed day from Gig.'
     ],
     gu: [
-      "મમ્મીને સવારની હિન્દુ ધાર્મિક શુભેચ્છા આપો. એક સુંદર મંત્ર અથવા શ્લોક (સરળ અર્થ સાથે) શેર કરો, અને ગિગ તરફથી હૃદયથી પ્રેમ ભરેલા શબ્દો. ટૂંકુ, ભાવભીનું અને આધ્યાત્મિક. 🙏🌅",
-      "ભગવદ ગીતાનો એક શ્લોક અથવા ભગવાન કૃષ્ણ / રામ વિશે ટૂંકી વાર્તા શેર કરો — સરળ ગુજરાતીમાં, ગિગ તરફથી સ્નેહ સાથે. 🙏",
-      "માતા લક્ષ્મી અથવા સરસ્વતીના આશીર્વાદ સાથે સવારની પ્રાર્થના — ટૂંકો મંત્ર, અર્થ, અને ગિગ તરફથી ઢગલો પ્રેમ. 🌸🙏",
-      "ભગવાન ગણેશ વિઘ્નહર્તા છે — આ ભાવ સાથે મમ્મીને સવારનો આશીર્વાદ આપો. ટૂંકી પ્રાર્થના અને ગિગ તરફથી પ્રેમ. 🐘🙏",
-      "હનુમાન ચાલીસાની એક-બે પંક્તિ અને અર્થ — ભગવાન હનુમાન સૌની રક્ષા કરે છે, ગિગ તરફથી સ્નેહ. 🙏🌅",
-      "રામાયણની ભક્તિ — સીતા, રામ, અથવા હનુમાનની ક્ષણ — ટૂંકી ગુજરાતીમાં, ગિગ તરફથી. 🙏",
-      "સૂર્ય દેવ અને ગાયત્રી મંત્ર — સરળ અર્થ સાથે — મમ્મીને ઉજ્જ્વળ, ઈશ્વરના આશીર્વાદ ભરેલો દિવસ. ☀️🙏",
+      '\u0aae\u0aae\u0acd\u0aae\u0ac0\u0aa8\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0aa8\u0ac0 \u0ab9\u0abf\u0a82\u0aa6\u0ac1 \u0aa7\u0abe\u0ab0\u0acd\u0aae\u0abf\u0a95 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe \u0a86\u0aaa\u0acb. \u0ab8\u0ac1\u0a82\u0aa6\u0ab0 \u0aae\u0a82\u0aa4\u0acd\u0ab0 (\u0ab8\u0ab0\u0ab3 \u0a85\u0ab0\u0acd\u0aa5 \u0ab8\u0abe\u0aa5\u0ac7) \u0a85\u0aa8\u0ac7 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0aaa\u0aad\u0acd\u0a95\u0aa4\u0abf\u0aad\u0ab0\u0ac0 \u0aaa\u0acd\u0ab0\u0ac7\u0aae.',
+      '\u0aad\u0a97\u0ab5\u0aa6 \u0a97\u0ac0\u0aa4\u0abe\u0aa8\u0acb \u0ab6\u0acd\u0ab2\u0acb\u0a95 \u0a85\u0aa5\u0ab5\u0abe \u0aad\u0a97\u0ab5\u0abe\u0aa8 \u0a95\u0ac3\u0ab7\u0acd\u0aa3 \u0ab5\u0abf\u0ab6\u0ac7 \u0a9f\u0ac2\u0a82\u0a95\u0ac0 \u0ab5\u0abe\u0ab0\u0acd\u0aa4\u0abe \u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0\u0aae\u0abe\u0a82 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0.',
+      '\u0aae\u0abe\u0aa4\u0abe \u0ab2\u0a95\u0acd\u0ab7\u0aae\u0ac0 \u0a85\u0aa5\u0ab5\u0abe \u0ab8\u0ab0\u0ab8\u0acd\u0ab5\u0aa4\u0ac0\u0aa8\u0abe \u0a86\u0ab6\u0ac0\u0ab0\u0acd\u0ab5\u0abe\u0aa6 \u0ab8\u0abe\u0aa5\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0aa8\u0ac0 \u0aaa\u0aad\u0acd\u0a95\u0aa4\u0abf \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0aaa\u0adf\u0abe\u0ab0 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe.',
+      '\u0aad\u0a97\u0ab5\u0abe\u0aa8 \u0a97\u0aa3\u0ac7\u0ab6 \u0ab5\u0abf\u0a98\u0acd\u0aa8\u0ab9\u0ab0\u0aad\u0acd\u0aa4\u0abe \u0a9b\u0ac7 \u0a86 \u0aad\u0abe\u0ab5 \u0ab8\u0abe\u0aa5\u0ac7 \u0aac\u0aae\u0acd\u0aae\u0ac0\u0aa8\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0aa8\u0acb \u0a86\u0ab6\u0ac0\u0ab0\u0acd\u0ab5\u0abe\u0aa6. \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0aaa\u0adf\u0abe\u0ab0.',
+      '\u0ab9\u0aa8\u0ac1\u0aae\u0abe\u0aa8 \u0a9a\u0abe\u0ab2\u0ac0\u0ab8\u0abe\u0aa8\u0ac0 \u0aaa\u0a82\u0a95\u0acd\u0aa4\u0abf \u0a85\u0aa8\u0ac7 \u0a85\u0ab0\u0acd\u0aa5 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0ab8\u0acd\u0aa8\u0ac7\u0ab9.',
+      '\u0ab0\u0abe\u0aae\u0abe\u0aaf\u0aa3\u0aa8\u0ac0 \u0aad\u0a95\u0acd\u0aa4\u0abf \u0a9f\u0ac2\u0a82\u0a95\u0ac0 \u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0\u0aae\u0abe\u0a82 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0.',
+      '\u0a97\u0abe\u0aaf\u0aa4\u0acd\u0ab0\u0ac0 \u0aae\u0a82\u0aa4\u0acd\u0ab0 \u0ab8\u0ab0\u0ab3 \u0a85\u0ab0\u0acd\u0aa5 \u0ab8\u0abe\u0aa5\u0ac7 \u0a89\u0a9c\u0acd\u0a9c\u0acd\u0ab5\u0ab3 \u0aa6\u0abf\u0ab5\u0ab8\u0aa8\u0ac0 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe.'
     ]
   };
 
-  function getTodayKey() {
-    const d = new Date();
-    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
-  }
+  function isIOS() { return /iphone|ipad|ipod/i.test(navigator.userAgent); }
+  function isStandalone() { return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone; }
 
-  async function sendMorningGreeting() {
-    const todayKey = `gig_morning_${getTodayKey()}_${lang}`;
-    if (localStorage.getItem(todayKey)) return; // already sent today
-
-    // Pick a prompt based on day of year so it rotates
-    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    const prompts = MORNING_PROMPTS[lang];
-    const prompt = prompts[dayOfYear % prompts.length];
-
-    showTyping();
-
-    try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1000,
-          system: SYSTEM[lang],
-          messages: [{ role: 'user', content: prompt }]
-        })
-      });
-
-      const data = await res.json();
-      removeTyping();
-
-      if (!data.error) {
-        const reply = data.content?.[0]?.text || '🙏 Jai Shri Krishna, Mum! Wishing you a beautiful blessed day 💛';
-        addBubble('gig', reply);
-        history.push({ role: 'assistant', content: reply });
-        localStorage.setItem(todayKey, '1');
-      }
-    } catch(e) {
-      removeTyping();
-    }
-  }
-
-  // ── Init ──
-  window.addEventListener('load', () => {
-    apiKey = localStorage.getItem('gig_key') || '';
-    if (apiKey) {
-      startApp();
-    }
-    // Auto-resize textarea
-    const ta = document.getElementById('user-input');
-    ta.addEventListener('input', () => {
-      ta.style.height = 'auto';
-      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
-    });
-    ta.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-      }
-    });
+  window.addEventListener('beforeinstallprompt', function(e) {
+    e.preventDefault();
+    deferredInstallPrompt = e;
   });
 
-  function saveKey() {
-    const k = document.getElementById('setup-key').value.trim();
-    if (!k.startsWith('sk-')) {
-      alert('That doesn\'t look right. Ask Gig for the key!');
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js').catch(function(){});
+  }
+
+  window.addEventListener('load', function() {
+    apiKey = localStorage.getItem('gig_key') || '';
+    if (isStandalone()) {
+      apiKey ? startApp() : showSetup();
       return;
     }
+    var seen = localStorage.getItem('gig_install_seen');
+    if (!seen) {
+      document.getElementById('install-screen').style.display = 'flex';
+    } else {
+      apiKey ? startApp() : showSetup();
+    }
+    var ta = document.getElementById('user-input');
+    ta.addEventListener('input', function() { ta.style.height = 'auto'; ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; });
+    ta.addEventListener('keydown', function(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+  });
+
+  function handleInstall() {
+    localStorage.setItem('gig_install_seen', '1');
+    if (isIOS()) {
+      document.getElementById('ios-guide').style.display = 'flex';
+    } else if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      deferredInstallPrompt.userChoice.then(function() { deferredInstallPrompt = null; goToSetup(); });
+    } else {
+      goToSetup();
+    }
+  }
+
+  function closeIosGuide() { document.getElementById('ios-guide').style.display = 'none'; goToSetup(); }
+
+  function goToSetup() {
+    localStorage.setItem('gig_install_seen', '1');
+    document.getElementById('install-screen').style.display = 'none';
+    apiKey ? startApp() : showSetup();
+  }
+
+  function showSetup() { document.getElementById('setup-screen').style.display = 'flex'; }
+
+  function saveKey() {
+    var k = document.getElementById('setup-key').value.trim();
+    if (!k.startsWith('sk-')) { alert('That does not look right. Ask Gig for the key!'); return; }
     localStorage.setItem('gig_key', k);
     apiKey = k;
     startApp();
   }
 
   function startApp() {
+    document.getElementById('install-screen').style.display = 'none';
     document.getElementById('setup-screen').style.display = 'none';
-    const app = document.getElementById('app');
-    app.style.display = 'flex';
+    document.getElementById('app').style.display = 'flex';
     showWelcome();
   }
 
   function showWelcome() {
-    const msgs = document.getElementById('messages');
-    const t = UI[lang];
-    const hour = new Date().getHours();
-    const isMorning = hour >= 5 && hour < 12;
-    msgs.innerHTML = `
-      <div class="welcome-banner">
-        <span class="emoji">${isMorning ? '🌅' : '💛'}</span>
-        <h3>${t.welcome_title}</h3>
-        <p>${t.welcome_body}</p>
-      </div>
-      <div class="date-divider">Today</div>
-    `;
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var hour = new Date().getHours();
+    var isMorning = hour >= 5 && hour < 12;
+    msgs.innerHTML = '<div class="welcome-banner"><span class="emoji">' + (isMorning ? '&#127749;' : '&#128155;') + '</span><h3>' + t.welcome_title + '</h3><p>' + t.welcome_body + '</p></div><div class="date-divider">Today</div>';
     history = [];
-    // Send Hindu morning greeting (checks if already sent today)
     sendMorningGreeting();
   }
 
-  // ── Language ──
   function setLang(l) {
     lang = l;
     document.getElementById('btn-en').classList.toggle('active', l === 'en');
@@ -593,118 +336,98 @@ You are also deeply rooted in Hindu faith and culture. When giving morning greet
     showWelcome();
   }
 
-  // ── Helpers ──
-  function getTime() {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  function getTodayKey() { var d = new Date(); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
+
+  async function sendMorningGreeting() {
+    var todayKey = 'gig_morning_' + getTodayKey() + '_' + lang;
+    if (localStorage.getItem(todayKey)) return;
+    var dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    var prompts = MORNING_PROMPTS[lang];
+    var prompt = prompts[dayOfYear % prompts.length];
+    showTyping();
+    try {
+      var res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: SYSTEM[lang], messages: [{ role: 'user', content: prompt }] })
+      });
+      var data = await res.json();
+      removeTyping();
+      if (!data.error) {
+        var reply = (data.content && data.content[0] && data.content[0].text) || 'Jai Shri Krishna Mum! Have a beautiful blessed day';
+        addBubble('gig', reply);
+        history.push({ role: 'assistant', content: reply });
+        localStorage.setItem(todayKey, '1');
+      }
+    } catch(e) { removeTyping(); }
   }
+
+  function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
 
   function addBubble(role, text) {
-    const msgs = document.getElementById('messages');
-    const t = UI[lang];
-    const isGig = role === 'gig';
-    const sender = isGig ? t.sender_gig : t.sender_mum;
-    const guClass = lang === 'gu' ? ' lang-gu' : '';
-
-    const row = document.createElement('div');
-    row.className = `msg-row ${role}`;
-    row.innerHTML = `
-      <div class="msg-sender">${sender}</div>
-      <div class="bubble${guClass}">${escHtml(text)}</div>
-      <div class="msg-time">${getTime()}</div>
-    `;
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var sender = role === 'gig' ? t.sender_gig : t.sender_mum;
+    var guClass = lang === 'gu' ? ' lang-gu' : '';
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    row.innerHTML = '<div class="msg-sender">' + sender + '</div><div class="bubble' + guClass + '">' + escHtml(text) + '</div><div class="msg-time">' + getTime() + '</div>';
     msgs.appendChild(row);
     msgs.scrollTop = msgs.scrollHeight;
-    return row;
   }
 
-  function escHtml(s) {
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-            .replace(/\n/g,'<br/>');
-  }
+  function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
   function showTyping() {
-    const msgs = document.getElementById('messages');
-    const t = UI[lang];
-    const el = document.createElement('div');
-    el.id = 'typing';
-    el.className = 'msg-row gig';
-    el.innerHTML = `
-      <div class="msg-sender">${t.sender_gig}</div>
-      <div class="typing-dots"><span></span><span></span><span></span></div>
-    `;
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var el = document.createElement('div');
+    el.id = 'typing'; el.className = 'msg-row gig';
+    el.innerHTML = '<div class="msg-sender">' + t.sender_gig + '</div><div class="typing-dots"><span></span><span></span><span></span></div>';
     msgs.appendChild(el);
     msgs.scrollTop = msgs.scrollHeight;
   }
 
-  function removeTyping() {
-    document.getElementById('typing')?.remove();
-  }
+  function removeTyping() { var el = document.getElementById('typing'); if (el) el.remove(); }
 
-  // ── Send ──
   async function sendMessage() {
-    const ta = document.getElementById('user-input');
-    const text = ta.value.trim();
+    var ta = document.getElementById('user-input');
+    var text = ta.value.trim();
     if (!text) return;
-
-    ta.value = '';
-    ta.style.height = 'auto';
+    ta.value = ''; ta.style.height = 'auto';
     document.getElementById('send-btn').disabled = true;
-
     addBubble('mum', text);
     history.push({ role: 'user', content: text });
-
     showTyping();
-
     try {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      var res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1000,
-          system: SYSTEM[lang],
-          messages: history
-        })
+        headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01', 'anthropic-dangerous-direct-browser-access': 'true' },
+        body: JSON.stringify({ model: 'claude-sonnet-4-6', max_tokens: 1000, system: SYSTEM[lang], messages: history })
       });
-
-      const data = await res.json();
-
+      var data = await res.json();
       if (data.error) {
         removeTyping();
-        if (data.error.type === 'authentication_error') {
-          showApiModal();
-        } else {
-          addBubble('gig', '❗ Something went wrong. Try again in a moment!');
-        }
+        if (data.error.type === 'authentication_error') { showApiModal(); }
+        else { addBubble('gig', 'Something went wrong. Try again in a moment!'); }
         document.getElementById('send-btn').disabled = false;
         return;
       }
-
-      const reply = data.content?.[0]?.text || '…';
+      var reply = (data.content && data.content[0] && data.content[0].text) || '...';
       removeTyping();
       addBubble('gig', reply);
       history.push({ role: 'assistant', content: reply });
-
-    } catch (e) {
+    } catch(e) {
       removeTyping();
-      addBubble('gig', '❗ Couldn\'t connect. Check your internet and try again!');
+      addBubble('gig', 'Could not connect. Check your internet and try again!');
     }
-
     document.getElementById('send-btn').disabled = false;
     ta.focus();
   }
 
-  function showApiModal() {
-    document.getElementById('api-modal').style.display = 'flex';
-  }
-
+  function showApiModal() { document.getElementById('api-modal').style.display = 'flex'; }
   function saveModalKey() {
-    const k = document.getElementById('modal-key').value.trim();
+    var k = document.getElementById('modal-key').value.trim();
     if (!k.startsWith('sk-')) return;
     localStorage.setItem('gig_key', k);
     apiKey = k;
