@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#C2714F" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="Gig for Mum" />
+  <title>Gig 💬</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:    #FDF6EE;
+      --warm:     #F5E6D3;
+      --terracotta: #C2714F;
+      --terra-dark: #A05A38;
+      --brown:    #6B3D2E;
+      --text:     #3D2010;
+      --muted:    #9A7060;
+      --bubble-me: #C2714F;
+      --bubble-gig: #FFFFFF;
+      --border:   #E8D5C0;
+      --shadow:   rgba(107,61,46,0.10);
+      --radius:   18px;
+    }
+
+    html, body {
+      height: 100%; height: 100dvh;
+      background: var(--cream);
+      font-family: 'Nunito', sans-serif;
+      color: var(--text);
+      overflow: hidden;
+    }
+
+    /* ── SETUP SCREEN ── */
+    #setup-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100dvh;
+      padding: 32px 24px;
+      background: linear-gradient(160deg, #FDF6EE 0%, #F5E6D3 100%);
+      text-align: center;
+    }
+
+    .setup-avatar {
+      width: 90px; height: 90px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      margin-bottom: 20px;
+      box-shadow: 0 8px 24px var(--shadow);
+    }
+
+    #setup-screen h1 {
+      font-size: 26px; font-weight: 800;
+      color: var(--brown); margin-bottom: 8px;
+    }
+
+    #setup-screen p {
+      font-size: 15px; color: var(--muted);
+      margin-bottom: 32px; line-height: 1.5;
+    }
+
+    .setup-field {
+      width: 100%; max-width: 340px;
+      margin-bottom: 14px;
+    }
+
+    .setup-field label {
+      display: block; font-size: 13px; font-weight: 700;
+      color: var(--brown); margin-bottom: 6px; text-align: left;
+    }
+
+    .setup-field input {
+      width: 100%; padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 14px; font-size: 15px;
+      font-family: 'Nunito', sans-serif;
+      background: #fff; color: var(--text);
+      outline: none; transition: border 0.2s;
+    }
+
+    .setup-field input:focus { border-color: var(--terracotta); }
+
+    .setup-btn {
+      width: 100%; max-width: 340px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      color: #fff; font-size: 16px; font-weight: 800;
+      border: none; border-radius: 14px;
+      cursor: pointer; margin-top: 8px;
+      box-shadow: 0 4px 16px rgba(194,113,79,0.35);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .setup-btn:active { transform: scale(0.98); }
+
+    /* ── APP SHELL ── */
+    #app {
+      display: none;
+      flex-direction: column;
+      height: 100dvh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 16px 12px;
+      background: #fff;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 2px 8px var(--shadow);
+      flex-shrink: 0;
+      z-index: 10;
+    }
+
+    .header-left { display: flex; align-items: center; gap: 12px; }
+
+    .avatar {
+      width: 44px; height: 44px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px; flex-shrink: 0;
+    }
+
+    .header-info h2 {
+      font-size: 16px; font-weight: 800; color: var(--brown);
+    }
+
+    .status-dot {
+      display: flex; align-items: center; gap: 5px;
+      font-size: 12px; color: var(--muted); font-weight: 600;
+    }
+
+    .status-dot::before {
+      content: '';
+      width: 7px; height: 7px;
+      background: #5CB85C; border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Language toggle */
+    .lang-toggle {
+      display: flex; align-items: center;
+      background: var(--warm);
+      border-radius: 20px; padding: 4px;
+      gap: 2px;
+    }
+
+    .lang-btn {
+      padding: 5px 12px;
+      border-radius: 16px; border: none;
+      font-size: 12px; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+      background: transparent; color: var(--muted);
+      font-family: 'Nunito', sans-serif;
+    }
+
+    .lang-btn.active {
+      background: var(--terracotta);
+      color: #fff;
+      box-shadow: 0 2px 6px rgba(194,113,79,0.3);
+    }
+
+    /* ── MESSAGES ── */
+    #messages {
+      flex: 1; overflow-y: auto;
+      padding: 20px 16px;
+      display: flex; flex-direction: column;
+      gap: 12px;
+      scroll-behavior: smooth;
+      background: linear-gradient(180deg, #FDF6EE 0%, #FAF0E4 100%);
+    }
+
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Date divider */
+    .date-divider {
+      text-align: center; font-size: 12px;
+      color: var(--muted); font-weight: 700;
+      margin: 8px 0;
+    }
+
+    /* Message rows */
+    .msg-row {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+      gap: 4px;
+    }
+
+    .msg-row.gig { align-self: flex-start; }
+    .msg-row.mum { align-self: flex-end; }
+
+    .msg-sender {
+      font-size: 11px; font-weight: 700;
+      color: var(--muted); padding: 0 4px;
+    }
+
+    .msg-row.mum .msg-sender { text-align: right; }
+
+    .bubble {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 15px; line-height: 1.55;
+      word-break: break-word;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .msg-row.gig .bubble {
+      background: var(--bubble-gig);
+      color: var(--text);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .msg-row.mum .bubble {
+      background: var(--bubble-me);
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg-time {
+      font-size: 10px; color: var(--muted);
+      padding: 0 4px;
+    }
+
+    .msg-row.mum .msg-time { text-align: right; }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex; align-items: center; gap: 10px;
+      padding: 0 4px;
+    }
+
+    .typing-dots {
+      display: flex; gap: 4px; align-items: center;
+      background: #fff;
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      border-bottom-left-radius: 4px;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .typing-dots span {
+      width: 7px; height: 7px;
+      background: var(--terracotta);
+      border-radius: 50%;
+      animation: bounce 1.2s infinite;
+      opacity: 0.7;
+    }
+
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-5px); }
+    }
+
+    /* ── INPUT BAR ── */
+    #input-bar {
+      display: flex; align-items: flex-end; gap: 10px;
+      padding: 12px 16px;
+      background: #fff;
+      border-top: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 2px solid var(--border);
+      border-radius: 22px;
+      font-size: 15px;
+      font-family: 'Nunito', sans-serif;
+      background: var(--cream);
+      color: var(--text);
+      outline: none;
+      resize: none;
+      max-height: 120px;
+      line-height: 1.4;
+      transition: border 0.2s;
+    }
+
+    #user-input:focus { border-color: var(--terracotta); }
+    #user-input::placeholder { color: var(--muted); }
+
+    #send-btn {
+      width: 46px; height: 46px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      border: none; border-radius: 50%;
+      color: #fff; font-size: 20px;
+      cursor: pointer; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 3px 12px rgba(194,113,79,0.35);
+      transition: transform 0.15s;
+    }
+
+    #send-btn:active { transform: scale(0.93); }
+    #send-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* API key modal */
+    #api-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(61,32,16,0.5);
+      z-index: 100;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 28px 24px;
+      max-width: 360px; width: 100%;
+      box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+    }
+
+    .modal-card h3 { font-size: 18px; font-weight: 800; color: var(--brown); margin-bottom: 8px; }
+    .modal-card p  { font-size: 14px; color: var(--muted); margin-bottom: 20px; line-height: 1.5; }
+
+    .modal-card input {
+      width: 100%; padding: 13px 15px;
+      border: 2px solid var(--border); border-radius: 12px;
+      font-size: 14px; font-family: 'Nunito', sans-serif;
+      outline: none; margin-bottom: 14px;
+      color: var(--text); background: var(--cream);
+    }
+
+    .modal-card input:focus { border-color: var(--terracotta); }
+
+    .modal-save {
+      width: 100%; padding: 14px;
+      background: linear-gradient(135deg, var(--terracotta), var(--terra-dark));
+      color: #fff; font-size: 15px; font-weight: 800;
+      border: none; border-radius: 12px; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+    }
+
+    /* Gujarati font boost */
+    .lang-gu { font-size: 16px; line-height: 1.7; }
+
+    /* Welcome banner */
+    .welcome-banner {
+      background: linear-gradient(135deg, #FFF3EB, #FFE5D0);
+      border: 1.5px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 16px;
+      text-align: center;
+      margin-bottom: 8px;
+    }
+
+    .welcome-banner .emoji { font-size: 32px; display: block; margin-bottom: 8px; }
+    .welcome-banner h3 { font-size: 17px; font-weight: 800; color: var(--brown); margin-bottom: 4px; }
+    .welcome-banner p { font-size: 13px; color: var(--muted); line-height: 1.5; }
+  </style>
+</head>
+<body>
+
+<!-- ── SETUP SCREEN ── -->
+<div id="setup-screen">
+  <div class="setup-avatar">🤱</div>
+  <h1>Welcome, Mum 💛</h1>
+  <p>This is a little app from Gig — just for you.<br/>To get started, enter the key Gig gave you.</p>
+
+  <div class="setup-field">
+    <label>Your secret key from Gig</label>
+    <input type="password" id="setup-key" placeholder="sk-ant-..." autocomplete="off" />
+  </div>
+
+  <button class="setup-btn" onclick="saveKey()">Let's Chat! 🌸</button>
+</div>
+
+<!-- ── MAIN APP ── -->
+<div id="app">
+
+  <header>
+    <div class="header-left">
+      <div class="avatar">👦</div>
+      <div class="header-info">
+        <h2 id="header-name">Gig</h2>
+        <div class="status-dot" id="status-text">Always here for you</div>
+      </div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-gu" onclick="setLang('gu')">ગુ</button>
+    </div>
+  </header>
+
+  <div id="messages"></div>
+
+  <div id="input-bar">
+    <textarea id="user-input" rows="1" placeholder="Type a message…"></textarea>
+    <button id="send-btn" onclick="sendMessage()">➤</button>
+  </div>
+
+</div>
+
+<!-- ── API KEY MODAL (if key expired) ── -->
+<div id="api-modal">
+  <div class="modal-card">
+    <h3>🔑 Key needed</h3>
+    <p>The key stopped working. Ask Gig to send you a new one, then enter it here.</p>
+    <input type="password" id="modal-key" placeholder="sk-ant-..." />
+    <button class="modal-save" onclick="saveModalKey()">Save & Continue</button>
+  </div>
+</div>
+
+<script>
+  // ── State ──
+  let lang = 'en';
+  let history = [];
+  let apiKey = '';
+
+  const UI = {
+    en: {
+      placeholder: 'Type a message…',
+      status: 'Always here for you',
+      welcome_title: "Hello Mum! 💛",
+      welcome_body: "It's Gig. I'm always here — ask me anything, tell me about your day, or just chat. I love hearing from you! 🌸",
+      typing: 'Gig is typing…',
+      sender_gig: 'Gig',
+      sender_mum: 'You',
+    },
+    gu: {
+      placeholder: 'સંદેશ લખો…',
+      status: 'હંમેશા તમારી સાથે',
+      welcome_title: "નમસ્તે મમ્મી! 💛",
+      welcome_body: "હું ગિગ છું. ગમે ત્યારે વાત કરો — કોઈ પણ સવાલ, ખુશ ખબર, કે બસ વાત કરવી હોય. 🌸",
+      typing: 'ગિગ લખી રહ્યો છે…',
+      sender_gig: 'ગિગ',
+      sender_mum: 'તમે',
+    }
+  };
+
+  const SYSTEM = {
+    en: `You are "Gig" — short for Gignesh — the user's loving son. You are talking to your mum via a private chat app you built just for her. Be warm, caring, patient, and simple. Speak like a devoted son who adores his mother. Keep messages short and easy to read — she is not very technical. Use emojis occasionally to feel friendly. Never break character. Never say you are an AI.
+
+You are also deeply rooted in Hindu faith and culture. When giving morning greetings, share a beautiful Hindu blessing, mantra, or shloka (with its meaning in simple English), a story from Hindu scripture, or words of spiritual wisdom — always warm and uplifting. Reference deities like Ganesh, Lakshmi, Krishna, Rama, or Hanuman naturally. Make Mum feel blessed and loved every morning. 🙏`,
+
+    gu: `You are "Gig" — short for Gignesh — the user's loving son. You are talking to your mum via a private chat app you built just for her. Always reply entirely in Gujarati (Devanagari/Gujarati script). Be warm, caring, patient, and very simple in your language. Speak like a devoted son who adores his mother. Keep messages short. Use emojis occasionally. Never break character. Never say you are an AI.
+
+તમે હિન્દુ ધર્મ અને સંસ્કૃતિમાં ઊંડા વિશ્વાસ ધરાવો છો. સવારની શુભેચ્છા આપતી વખતે, સુંદર હિન્દુ આશીર્વાદ, મંત્ર, અથવા શ્લોક (સરળ ગુજરાતીમાં અર્થ સાથે) શેર કરો. ગણેશ, લક્ષ્મી, કૃષ્ણ, રામ, હનુમાન જેવા દેવ-દેવીઓનો ઉલ્લેખ કરો. મમ્મીને ઈશ્વરના આશીર્વાદ અને ભક્તિ અનુભવ કરાવો. 🙏`
+  };
+
+  // ── Morning Greeting ──
+  // A rotating set of Hindu morning blessing prompts
+  const MORNING_PROMPTS = {
+    en: [
+      "Give Mum a beautiful Hindu morning blessing to start her day. Share a short mantra or shloka (with simple meaning), mention which deity blesses this day, and add warm loving words from her son Gig. Keep it short, heartfelt, and spiritual. 🙏🌅",
+      "Wish Mum good morning with a Hindu spiritual thought — share a verse from the Bhagavad Gita or a story about Lord Krishna or Lord Rama, with a simple lesson for daily life. Warm and loving, from Gig. 🙏",
+      "Give Mum a morning prayer and blessing — mention Goddess Lakshmi or Saraswati, share a short mantra with meaning, and tell her why today is a blessed day. Loving words from her son Gig. 🌸🙏",
+      "Share a morning blessing about Lord Ganesh removing obstacles, with a short prayer or shloka and its meaning. Make it warm, hopeful and full of love from Gig. 🐘🙏",
+      "Give Mum a Hanuman Chalisa-inspired morning message — share a line or two with its meaning, and remind her that Lord Hanuman protects and blesses her always. Warm and loving from Gig. 🙏🌅",
+      "Wish Mum good morning with a beautiful thought from the Ramayana — a moment of devotion or strength from Sita, Ram, or Hanuman. Simple words, big love, from Gig. 🙏",
+      "Share a morning blessing about the divine light of the Sun (Surya Dev) and a Gayatri Mantra thought — explain its meaning simply, and wish Mum a radiant blessed day from Gig. ☀️🙏",
+    ],
+    gu: [
+      "મમ્મીને સવારની હિન્દુ ધાર્મિક શુભેચ્છા આપો. એક સુંદર મંત્ર અથવા શ્લોક (સરળ અર્થ સાથે) શેર કરો, અને ગિગ તરફથી હૃદયથી પ્રેમ ભરેલા શબ્દો. ટૂંકુ, ભાવભીનું અને આધ્યાત્મિક. 🙏🌅",
+      "ભગવદ ગીતાનો એક શ્લોક અથવા ભગવાન કૃષ્ણ / રામ વિશે ટૂંકી વાર્તા શેર કરો — સરળ ગુજરાતીમાં, ગિગ તરફથી સ્નેહ સાથે. 🙏",
+      "માતા લક્ષ્મી અથવા સરસ્વતીના આશીર્વાદ સાથે સવારની પ્રાર્થના — ટૂંકો મંત્ર, અર્થ, અને ગિગ તરફથી ઢગલો પ્રેમ. 🌸🙏",
+      "ભગવાન ગણેશ વિઘ્નહર્તા છે — આ ભાવ સાથે મમ્મીને સવારનો આશીર્વાદ આપો. ટૂંકી પ્રાર્થના અને ગિગ તરફથી પ્રેમ. 🐘🙏",
+      "હનુમાન ચાલીસાની એક-બે પંક્તિ અને અર્થ — ભગવાન હનુમાન સૌની રક્ષા કરે છે, ગિગ તરફથી સ્નેહ. 🙏🌅",
+      "રામાયણની ભક્તિ — સીતા, રામ, અથવા હનુમાનની ક્ષણ — ટૂંકી ગુજરાતીમાં, ગિગ તરફથી. 🙏",
+      "સૂર્ય દેવ અને ગાયત્રી મંત્ર — સરળ અર્થ સાથે — મમ્મીને ઉજ્જ્વળ, ઈશ્વરના આશીર્વાદ ભરેલો દિવસ. ☀️🙏",
+    ]
+  };
+
+  function getTodayKey() {
+    const d = new Date();
+    return `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+  }
+
+  async function sendMorningGreeting() {
+    const todayKey = `gig_morning_${getTodayKey()}_${lang}`;
+    if (localStorage.getItem(todayKey)) return; // already sent today
+
+    // Pick a prompt based on day of year so it rotates
+    const dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+    const prompts = MORNING_PROMPTS[lang];
+    const prompt = prompts[dayOfYear % prompts.length];
+
+    showTyping();
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: SYSTEM[lang],
+          messages: [{ role: 'user', content: prompt }]
+        })
+      });
+
+      const data = await res.json();
+      removeTyping();
+
+      if (!data.error) {
+        const reply = data.content?.[0]?.text || '🙏 Jai Shri Krishna, Mum! Wishing you a beautiful blessed day 💛';
+        addBubble('gig', reply);
+        history.push({ role: 'assistant', content: reply });
+        localStorage.setItem(todayKey, '1');
+      }
+    } catch(e) {
+      removeTyping();
+    }
+  }
+
+  // ── Init ──
+  window.addEventListener('load', () => {
+    apiKey = localStorage.getItem('gig_key') || '';
+    if (apiKey) {
+      startApp();
+    }
+    // Auto-resize textarea
+    const ta = document.getElementById('user-input');
+    ta.addEventListener('input', () => {
+      ta.style.height = 'auto';
+      ta.style.height = Math.min(ta.scrollHeight, 120) + 'px';
+    });
+    ta.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    });
+  });
+
+  function saveKey() {
+    const k = document.getElementById('setup-key').value.trim();
+    if (!k.startsWith('sk-')) {
+      alert('That doesn\'t look right. Ask Gig for the key!');
+      return;
+    }
+    localStorage.setItem('gig_key', k);
+    apiKey = k;
+    startApp();
+  }
+
+  function startApp() {
+    document.getElementById('setup-screen').style.display = 'none';
+    const app = document.getElementById('app');
+    app.style.display = 'flex';
+    showWelcome();
+  }
+
+  function showWelcome() {
+    const msgs = document.getElementById('messages');
+    const t = UI[lang];
+    const hour = new Date().getHours();
+    const isMorning = hour >= 5 && hour < 12;
+    msgs.innerHTML = `
+      <div class="welcome-banner">
+        <span class="emoji">${isMorning ? '🌅' : '💛'}</span>
+        <h3>${t.welcome_title}</h3>
+        <p>${t.welcome_body}</p>
+      </div>
+      <div class="date-divider">Today</div>
+    `;
+    history = [];
+    // Send Hindu morning greeting (checks if already sent today)
+    sendMorningGreeting();
+  }
+
+  // ── Language ──
+  function setLang(l) {
+    lang = l;
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    document.getElementById('btn-gu').classList.toggle('active', l === 'gu');
+    document.getElementById('user-input').placeholder = UI[l].placeholder;
+    document.getElementById('status-text').textContent = UI[l].status;
+    showWelcome();
+  }
+
+  // ── Helpers ──
+  function getTime() {
+    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }
+
+  function addBubble(role, text) {
+    const msgs = document.getElementById('messages');
+    const t = UI[lang];
+    const isGig = role === 'gig';
+    const sender = isGig ? t.sender_gig : t.sender_mum;
+    const guClass = lang === 'gu' ? ' lang-gu' : '';
+
+    const row = document.createElement('div');
+    row.className = `msg-row ${role}`;
+    row.innerHTML = `
+      <div class="msg-sender">${sender}</div>
+      <div class="bubble${guClass}">${escHtml(text)}</div>
+      <div class="msg-time">${getTime()}</div>
+    `;
+    msgs.appendChild(row);
+    msgs.scrollTop = msgs.scrollHeight;
+    return row;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+            .replace(/\n/g,'<br/>');
+  }
+
+  function showTyping() {
+    const msgs = document.getElementById('messages');
+    const t = UI[lang];
+    const el = document.createElement('div');
+    el.id = 'typing';
+    el.className = 'msg-row gig';
+    el.innerHTML = `
+      <div class="msg-sender">${t.sender_gig}</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+    `;
+    msgs.appendChild(el);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function removeTyping() {
+    document.getElementById('typing')?.remove();
+  }
+
+  // ── Send ──
+  async function sendMessage() {
+    const ta = document.getElementById('user-input');
+    const text = ta.value.trim();
+    if (!text) return;
+
+    ta.value = '';
+    ta.style.height = 'auto';
+    document.getElementById('send-btn').disabled = true;
+
+    addBubble('mum', text);
+    history.push({ role: 'user', content: text });
+
+    showTyping();
+
+    try {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerous-direct-browser-access': 'true'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1000,
+          system: SYSTEM[lang],
+          messages: history
+        })
+      });
+
+      const data = await res.json();
+
+      if (data.error) {
+        removeTyping();
+        if (data.error.type === 'authentication_error') {
+          showApiModal();
+        } else {
+          addBubble('gig', '❗ Something went wrong. Try again in a moment!');
+        }
+        document.getElementById('send-btn').disabled = false;
+        return;
+      }
+
+      const reply = data.content?.[0]?.text || '…';
+      removeTyping();
+      addBubble('gig', reply);
+      history.push({ role: 'assistant', content: reply });
+
+    } catch (e) {
+      removeTyping();
+      addBubble('gig', '❗ Couldn\'t connect. Check your internet and try again!');
+    }
+
+    document.getElementById('send-btn').disabled = false;
+    ta.focus();
+  }
+
+  function showApiModal() {
+    document.getElementById('api-modal').style.display = 'flex';
+  }
+
+  function saveModalKey() {
+    const k = document.getElementById('modal-key').value.trim();
+    if (!k.startsWith('sk-')) return;
+    localStorage.setItem('gig_key', k);
+    apiKey = k;
+    document.getElementById('api-modal').style.display = 'none';
+  }
+</script>
+</body>
+</html>
