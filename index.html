@@ -69,11 +69,10 @@
     .ios-close { width: 100%; margin-top: 6px; padding: 14px; background: var(--warm); color: var(--brown); font-size: 15px; font-weight: 800; border: none; border-radius: 12px; cursor: pointer; font-family: 'Nunito', sans-serif; }
 
     /* APP SHELL */
-    #app { display: flex; flex-direction: column; height: 100dvh; }
+    #app { display: none; flex-direction: column; height: 100dvh; }
     header { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 12px; background: #fff; border-bottom: 1px solid var(--border); box-shadow: 0 2px 8px var(--shadow); flex-shrink: 0; z-index: 10; }
     .header-left { display: flex; align-items: center; gap: 12px; }
     
-    /* Warm Initial-Based Custom Typography Avatar Layout */
     .avatar { 
       width: 44px; height: 44px; 
       background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); 
@@ -208,7 +207,6 @@
 </div>
 
 <script>
-  // SECURE BACKEND LINK: Relative path securely communicates with your Vercel serverless folder
   var BACKEND_URL = "/api/chat";
 
   var lang = 'en';
@@ -218,18 +216,18 @@
   var deferredInstallPrompt = null;
 
   var UI = {
-    en: { placeholder: 'Type a message...', status: 'Always here for you', welcome_title: 'Hello Mummy & Papa! 🧡', welcome_body: 'It\'s Gig. I\'m always here — ask me anything, tell me about your day, or just chat. I love hearing from you both! 🌸', sender_gig: 'Gig', sender_mum: 'Parents' },
+    en: { placeholder: 'Type a message...', status: 'Always here for you', welcome_title: 'Hello Mum and Dad! 🧡', welcome_body: 'It\'s Gig. I\'m always here — ask me anything, tell me about your day, or just chat. I love hearing from you both! 🌸', sender_gig: 'Gig', sender_mum: 'Parents' },
     gu: { placeholder: '\u0ab8\u0a82\u0aa6\u0ac7\u0ab6 \u0ab2\u0ec1\u0a96\u0acb...', status: '\u0ab9\u0a82\u0aae\u0ac7\u0ab6\u0abe \u0aa4\u0aae\u0abe\u0ab0\u0ac0 \u0ab8\u0abe\u0aa5\u0ac7', welcome_title: '\u0aa8\u0aae\u0ab8\u0acd\u0aa4\u0ac7 \u0aae\u0aae\u0acd\u0aae\u0ac0 \u0a85\u0aa8\u0ac7 \u0aaa\u0aaa\u0acd\u0aaa\u0abe! 🧡', welcome_body: '\u0ab9\u0ac1\u0a82 \u0a97\u0abf\u0a97 \u0a9b\u0ac1\u0a82. \u0a97\u0aae\u0ac7 \u0aa4\u0acd\u0aaf\u0abe\u0ab0\u0ac7 \u0ab5\u0abe\u0aa4 \u0a95\u0ab0\u0acb 🌸', sender_gig: '\u0a97\u0abf\u0a97', sender_mum: '\u0aa4\u0aae\u0ac7' }
   };
 
   var MORNING_PROMPTS = {
     en: [
-      'Give Mummy and Papa a beautiful Hindu morning blessing. Share a short mantra or shloka with simple meaning, mention which deity blesses this day, warm loving words from their son Gig. Short, heartfelt, spiritual.',
+      'Give Mum and Dad a beautiful Hindu morning blessing. Share a short mantra or shloka with simple meaning, mention which deity blesses this day, warm loving words from their son Gig. Short, heartfelt, spiritual.',
       'Wish parents good morning with a verse from the Bhagavad Gita or a short story about Lord Krishna or Rama with a simple life lesson. Warm and loving from Gig.',
       'Give parents a morning prayer mentioning Goddess Lakshmi or Saraswati, a short mantra with meaning. Tell them today is a blessed day. From Gig with love.',
       'Share a morning blessing about Lord Ganesh removing all obstacles, with a short prayer and its simple meaning. Warm, hopeful and full of love from Gig to his parents.',
       'Give a Hanuman Chalisa inspired morning message. Share a line with its meaning. Remind parents that Lord Hanuman protects and blesses them always. Warm from Gig.',
-      'Wish Mummy and Papa good morning with a beautiful thought from the Ramayana about devotion from Sita, Ram or Hanuman. Simple words, big love, from Gig.',
+      'Wish Mum and Dad good morning with a beautiful thought from the Ramayana about devotion from Sita, Ram or Hanuman. Simple words, big love, from Gig.',
       'Share a morning blessing about Surya Dev and the Gayatri Mantra. Explain its meaning simply. Wish parents a radiant blessed day from Gig.'
     ],
     gu: [
@@ -271,7 +269,6 @@
       ta.style.height = Math.min(ta.scrollHeight, 120) + 'px'; 
     });
 
-    // KEYBOARD VIEWPORT RECOMPOSITION PATCHES
     ta.addEventListener('focus', function() { setTimeout(scrollToBottom, 300); });
     window.addEventListener('resize', function() { scrollToBottom(); });
     
@@ -307,14 +304,13 @@
     var hour = new Date().getHours();
     var isMorning = hour >= 5 && hour < 12;
     
-    // Warm, stylized custom initial gradients instead of standard emojis
     var bannerEmblem = isMorning 
       ? '<div style="width: 70px; height: 70px; background: linear-gradient(135deg, #FFB347, #F12711); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 36px; margin: 0 auto 12px; box-shadow: 0 6px 16px rgba(241,39,17,0.2);">☀️</div>'
       : '<div style="width: 70px; height: 70px; background: linear-gradient(135deg, #E8D5C0, #C2714F); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 12px; box-shadow: 0 6px 16px rgba(107,61,46,0.15);">💝</div>';
     
     msgs.innerHTML = '<div class="welcome-banner">' + bannerEmblem + '<h3>' + t.welcome_title + '</h3><p>' + t.welcome_body + '</p></div><div class="date-divider">Today</div>';
     
-    // PERSISTENT MEMORY INTEGRATION: Reads saved data arrays straight from local disc
+    // Load historical chat from local storage if it exists
     var savedHistory = localStorage.getItem('gig_chat_history_' + lang);
     if (savedHistory) {
       history = JSON.parse(savedHistory);
@@ -332,8 +328,10 @@
       scrollToBottom();
     } else {
       history = [];
-      sendMorningGreeting();
     }
+
+    // ALWAYS greeting them with a dynamic religious blessing upon opening the app
+    sendMorningGreeting();
   }
 
   function setLang(l) {
@@ -345,9 +343,6 @@
     showWelcome();
   }
 
-  function getTodayKey() { var d = new Date(); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }
-
-  // TEXT-TO-SPEECH VOICE MESSAGING UPGRADE
   function speakText(text) {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
@@ -357,7 +352,6 @@
     }
   }
 
-  // PHOTO UPLOAD ENGINE MULTIMODAL CAPABILITIES
   function previewImage(input) {
     if (input.files && input.files[0]) {
       var reader = new FileReader();
@@ -389,14 +383,13 @@
   }
 
   async function sendMorningGreeting() {
-    var todayKey = 'gig_morning_' + getTodayKey() + '_' + lang;
-    if (localStorage.getItem(todayKey)) return;
-    var dayOfYear = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
-    var prompts = MORNING_PROMPTS[lang];
-    var prompt = prompts[dayOfYear % prompts.length];
+    // Structural optimization: generated randomly from the shloka index array on entry
+    var randomIndex = Math.floor(Math.random() * MORNING_PROMPTS[lang].length);
+    var prompt = MORNING_PROMPTS[lang][randomIndex];
     showTyping();
     try {
-      var initialPayload = [{ role: 'user', parts: [{ text: prompt }] }];
+      var initialPayload = formatHistoryForGemini(history);
+      initialPayload.push({ role: 'user', parts: [{ text: prompt }] });
       
       var res = await fetch(BACKEND_URL, {
         method: 'POST',
@@ -411,7 +404,6 @@
         addBubble('gig', reply);
         history.push({ role: 'model', parts: [{ text: reply }] });
         localStorage.setItem('gig_chat_history_' + lang, JSON.stringify(history));
-        localStorage.setItem(todayKey, '1');
       }
     } catch(e) { removeTyping(); }
   }
@@ -429,7 +421,6 @@
     var row = document.createElement('div');
     row.className = 'msg-row ' + role;
     
-    // Inject speaker trigger next to incoming content layout blocks
     var listenMark = role === 'gig' ? ' <button class="listen-btn" onclick="speakText(\`' + text.replace(/`/g, "\\`").replace(/\n/g, " ") + '\`)">🔊 Listen</button>' : '';
     var imageTag = imageUrl ? '<img src="' + imageUrl + '" alt="shared asset"/>' : '';
 
@@ -438,7 +429,7 @@
     scrollToBottom();
   }
 
-  function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  var getTime = function() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
   function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
 
   function showTyping() {
