@@ -62,7 +62,7 @@
       display: none; position: fixed; inset: 0;
       background: rgba(43,27,25,0.4); z-index: 300;
       align-items: flex-end; justify-content: center; padding: 20px;
-      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: flex-end; justify-content: center;
     }
     .ios-card {
       background: #fff; border-radius: 24px; padding: 32px 24px 24px;
@@ -95,3 +95,489 @@
     .lang-toggle { display: flex; align-items: center; background: var(--warm); border-radius: 20px; padding: 3px; gap: 1px; }
     .lang-btn { padding: 6px 14px; border-radius: 16px; border: none; font-size: 11px; font-weight: 800; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--muted); font-family: 'Nunito', sans-serif; }
     .lang-btn.active { background: #fff; color: var(--brown); box-shadow: 0 2px 6px rgba(4A,46,43,0.08); }
+    
+    #messages { 
+      flex: 1; overflow-y: auto; padding: 24px 20px; display: flex; 
+      flex-direction: column; gap: 16px; scroll-behavior: smooth; 
+      background: linear-gradient(180deg, var(--cream) 0%, #F5EDE4 100%); 
+    }
+    #messages::-webkit-scrollbar { width: 4px; }
+    #messages::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    
+    .date-divider { text-align: center; font-size: 11px; color: var(--muted); font-weight: 700; margin: 12px 0; text-transform: uppercase; letter-spacing: 0.8px; }
+    .msg-row { display: flex; flex-direction: column; max-width: 78%; gap: 4px; }
+    .msg-row.gig { align-self: flex-start; }
+    .msg-row.mum { align-self: flex-end; }
+    .msg-sender { display: flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; color: var(--muted); padding: 0 4px; }
+    .msg-row.mum .msg-sender { justify-content: flex-end; }
+    
+    .bubble { padding: 12px 18px; border-radius: var(--radius); font-size: 15px; line-height: 1.6; word-break: break-word; box-shadow: 0 2px 8px var(--shadow); }
+    .msg-row.gig .bubble { background: #fff; color: var(--text); border-bottom-left-radius: 4px; border: 1px solid rgba(230,220,211,0.7); }
+    .msg-row.mum .bubble { background: var(--terracotta); color: #fff; border-bottom-right-radius: 4px; box-shadow: 0 4px 12px rgba(184,90,56,0.15); }
+    .bubble img { max-width: 100%; border-radius: 10px; margin-bottom: 8px; display: block; }
+    
+    .listen-btn { background: var(--warm); border: none; padding: 3px 10px; border-radius: 20px; color: var(--brown); font-size: 10px; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 4px; transition: background 0.15s; }
+    .listen-btn:active { background: var(--border); }
+    .msg-time { font-size: 10px; color: var(--muted); padding: 0 4px; opacity: 0.8; }
+    .msg-row.mum .msg-time { text-align: right; }
+    
+    /* INTERACTIVE BOTTOM BAR CONTEXTS */
+    #input-shell { display: flex; flex-direction: column; background: #fff; border-top: 1px solid var(--border); flex-shrink: 0; box-shadow: 0 -2px 10px var(--shadow); }
+    #input-bar { display: flex; align-items: flex-end; gap: 10px; padding: 14px 20px; }
+    #user-input { flex: 1; padding: 12px 18px; border: 1.5px solid var(--border); border-radius: 24px; font-size: 15px; font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--text); outline: none; resize: none; max-height: 120px; line-height: 1.4; transition: border 0.2s, background 0.2s; }
+    #user-input:focus { border-color: var(--terracotta); background: #fff; }
+    
+    /* VIRTUAL GUJARATI KEYBOARD TRAY */
+    #gujarati-keyboard {
+      display: none; background: #F7F3EE; border-top: 1px solid var(--border);
+      padding: 8px 6px; gap: 6px; flex-direction: column; max-height: 190px; overflow-y: auto;
+    }
+    .kb-row { display: flex; justify-content: center; gap: 4px; flex-wrap: wrap; }
+    .kb-key {
+      background: #fff; border: 1px solid var(--border); border-radius: 8px;
+      color: var(--text); font-size: 17px; font-weight: 700; width: calc(10% - 4px); min-width: 34px;
+      height: 38px; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; user-select: none; transition: background 0.1s;
+    }
+    .kb-key:active { background: var(--warm); }
+    .kb-key.action-key { background: var(--warm); font-size: 12px; width: auto; padding: 0 12px; }
+
+    .media-btn { width: 44px; height: 44px; background: var(--warm); border: none; border-radius: 50%; color: var(--brown); font-size: 18px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 6px rgba(74,46,43,0.04); transition: background 0.2s; }
+    .media-btn:active { background: var(--border); }
+    #send-btn { width: 44px; height: 44px; background: linear-gradient(135deg, var(--terracotta), var(--terra-dark)); border: none; border-radius: 50%; color: #fff; font-size: 16px; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(184,90,56,0.3); transition: transform 0.1s; }
+    #send-btn:active { transform: scale(0.95); }
+    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+    
+    #preview-container { display: none; padding: 10px 20px; background: #fff; border-top: 1px solid var(--border); align-items: center; gap: 12px; }
+    #image-preview { height: 54px; border-radius: 8px; border: 1px solid var(--border); object-fit: cover; }
+    #remove-preview { background: var(--terracotta); color: white; border: none; border-radius: 50%; width: 22px; height: 22px; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+    
+    #media-menu-overlay {
+      display: none; position: fixed; inset: 0; background: rgba(43,27,25,0.4); z-index: 200;
+      backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); align-items: flex-end; justify-content: center;
+    }
+    .media-menu-card {
+      background: #fff; width: 100%; max-width: 450px; border-top-left-radius: 24px; border-top-right-radius: 24px;
+      padding: 24px; box-shadow: 0 -8px 30px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 12px;
+      animation: slideUp 0.25s ease-out;
+    }
+    @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+    .media-menu-title { font-size: 14px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; text-align: center; }
+    .media-option-btn {
+      width: 100%; padding: 16px; border-radius: 14px; border: 1px solid var(--border);
+      background: var(--cream); color: var(--text); font-family: 'Nunito', sans-serif;
+      font-size: 16px; font-weight: 700; text-align: left; display: flex; align-items: center; gap: 14px; cursor: pointer; transition: background 0.15s;
+    }
+    .media-option-btn:active { background: var(--warm); }
+    .media-option-icon { font-size: 20px; }
+    .media-cancel-btn {
+      width: 100%; padding: 14px; border-radius: 12px; border: none;
+      background: var(--warm); color: var(--brown); font-family: 'Nunito', sans-serif;
+      font-size: 15px; font-weight: 800; cursor: pointer; margin-top: 4px;
+    }
+
+    .typing-dots { display: flex; gap: 4px; align-items: center; background: #fff; padding: 12px 18px; border-radius: var(--radius); border-bottom-left-radius: 4px; border: 1px solid rgba(230,220,211,0.6); box-shadow: 0 2px 8px var(--shadow); }
+    .typing-dots span { width: 6px; height: 6px; background: var(--terracotta); border-radius: 50%; animation: bounce 1.2s infinite; opacity: 0.7; }
+    .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }
+    
+    .welcome-banner { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 24px 20px; text-align: center; margin-bottom: 12px; box-shadow: 0 4px 15px var(--shadow); }
+    .welcome-banner h3 { font-size: 18px; font-weight: 800; color: var(--brown); margin-bottom: 6px; letter-spacing: -0.2px; }
+    .welcome-banner p { font-size: 13px; color: var(--muted); line-height: 1.6; max-width: 280px; margin: 0 auto; }
+    .lang-gu { font-size: 16px; line-height: 1.7; }
+  </style>
+</head>
+<body>
+
+<div id="install-screen">
+  <div class="install-icon">&#128102;</div>
+  <h1>Gig has a surprise for you! &#128155;</h1>
+  <p class="subtitle">Your son Gig made this special app just for you both. Install it on your phone so we can chat any time &#8212; just like WhatsApp!</p>
+  <button class="install-btn" onclick="handleInstall()">&#128242; Install App on My Phone</button>
+  <button class="skip-btn" onclick="goToApp()">I will do it later &#8212; take me to the app</button>
+</div>
+
+<div id="ios-guide">
+  <div class="ios-card">
+    <h3>Add Gig to your Home Screen &#128247;</h3>
+    <div class="ios-step">
+      <div class="ios-num">1</div>
+      <p>Tap the <strong>Share button</strong> at the bottom of Safari &#8212; it looks like a box with an arrow pointing up</p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">2</div>
+      <p>Scroll down the list and tap <strong>"Add to Home Screen"</strong></p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">3</div>
+      <p>Tap <strong>"Add"</strong> in the top right corner</p>
+    </div>
+    <div class="ios-step">
+      <div class="ios-num">4</div>
+      <p>You will see a <strong>Gig icon</strong> on your home screen &#8212; tap it to open! &#127881;</p>
+    </div>
+    <button class="ios-close" onclick="closeIosGuide()">Done! &#128591;</button>
+  </div>
+</div>
+
+<div id="app">
+  <header>
+    <div class="header-left">
+      <div class="avatar">G</div>
+      <div class="header-info">
+        <h2>Gig</h2>
+        <div class="status-dot" id="status-text">Always here for you</div>
+      </div>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-en" onclick="setLang('en')">EN</button>
+      <button class="lang-btn" id="btn-gu" onclick="setLang('gu')">&#2711;&#2753;</button>
+    </div>
+  </header>
+  
+  <div id="messages"></div>
+
+  <div id="preview-container">
+    <img id="image-preview" src="" alt="Upload preview" />
+    <button id="remove-preview" onclick="clearImagePreview()">×</button>
+    <span style="font-size:12px; color:var(--muted); font-weight:600;">Photo ready to send</span>
+  </div>
+
+  <div id="input-shell">
+    <div id="gujarati-keyboard">
+      <div class="kb-row">
+        <div class="kb-key" onclick="appendKey('ા')">ા</div><div class="kb-key" onclick="appendKey('િ')">િ</div>
+        <div class="kb-key" onclick="appendKey('ી')">ી</div><div class="kb-key" onclick="appendKey('ુ')">ુ</div>
+        <div class="kb-key" onclick="appendKey('ૂ')">ૂ</div><div class="kb-key" onclick="appendKey('ે')">ે</div>
+        <div class="kb-key" onclick="appendKey('ૈ')">ૈ</div><div class="kb-key" onclick="appendKey('ો')">ો</div>
+        <div class="kb-key" onclick="appendKey('ૌ')">ૌ</div><div class="kb-key" onclick="appendKey('ં')">ં</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" onclick="appendKey('ક')">ક</div><div class="kb-key" onclick="appendKey('ખ')">ખ</div>
+        <div class="kb-key" onclick="appendKey('ગ')">ગ</div><div class="kb-key" onclick="appendKey('ઘ')">ઘ</div>
+        <div class="kb-key" onclick="appendKey('ચ')">ચ</div><div class="kb-key" onclick="appendKey('છ')">છ</div>
+        <div class="kb-key" onclick="appendKey('જ')">જ</div><div class="kb-key" onclick="appendKey('ઝ')">ઝ</div>
+        <div class="kb-key" onclick="appendKey('ટ')">ટ</div><div class="kb-key" onclick="appendKey('ઠ')">ઠ</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" onclick="appendKey('ડ')">ડ</div><div class="kb-key" onclick="appendKey('ઢ')">ઢ</div>
+        <div class="kb-key" onclick="appendKey('ણ')">ણ</div><div class="kb-key" onclick="appendKey('ત')">ત</div>
+        <div class="kb-key" onclick="appendKey('થ')">થ</div><div class="kb-key" onclick="appendKey('દ')">દ</div>
+        <div class="kb-key" onclick="appendKey('ધ')">ધ</div><div class="kb-key" onclick="appendKey('ન')">ન</div>
+        <div class="kb-key" onclick="appendKey('પ')">પ</div><div class="kb-key" onclick="appendKey('ફ')">ફ</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" onclick="appendKey('બ')">બ</div><div class="kb-key" onclick="appendKey('ભ')">ભ</div>
+        <div class="kb-key" onclick="appendKey('મ')">મ</div><div class="kb-key" onclick="appendKey('ય')">ય</div>
+        <div class="kb-key" onclick="appendKey('ર')">ર</div><div class="kb-key" onclick="appendKey('લ')">લ</div>
+        <div class="kb-key" onclick="appendKey('વ')">વ</div><div class="kb-key" onclick="appendKey('શ')">શ</div>
+        <div class="kb-key" onclick="appendKey('ષ')">ષ</div><div class="kb-key" onclick="appendKey('સ')">સ</div>
+      </div>
+      <div class="kb-row">
+        <div class="kb-key" onclick="appendKey('હ')">હ</div><div class="kb-key" onclick="appendKey('ળ')">ળ</div>
+        <div class="kb-key" onclick="appendKey('ક્ષ')">ક્ષ</div><div class="kb-key" onclick="appendKey('જ્ઞ')">જ્ઞ</div>
+        <div class="kb-key action-key" style="flex-grow:2;" onclick="appendKey(' ')">Space (જગ્યા)</div>
+        <div class="kb-key action-key" onclick="backspaceKey()">⌫ ભૂંસો</div>
+      </div>
+    </div>
+
+    <div id="input-bar">
+      <button class="media-btn" onclick="openMediaMenu()">📷</button>
+      
+      <input type="file" id="direct-camera-input" accept="image/*" capture="environment" style="display:none;" onchange="previewImage(this)" />
+      <input type="file" id="gallery-input" accept="image/*" style="display:none;" onchange="previewImage(this)" />
+      <input type="file" id="generic-file-input" accept="*/*" style="display:none;" onchange="previewImage(this)" />
+      
+      <textarea id="user-input" rows="1" placeholder="Type a message..."></textarea>
+      <button id="send-btn" onclick="sendMessage()">&#10148;</button>
+    </div>
+  </div>
+</div>
+
+<div id="media-menu-overlay" onclick="closeMediaMenu()">
+  <div class="media-menu-card" onclick="event.stopPropagation()">
+    <div class="media-menu-title">Share a Photo</div>
+    <button class="media-option-btn" onclick="triggerMediaInput('direct-camera-input')">
+      <span class="media-option-icon">📸</span> Take Live Photo
+    </button>
+    <button class="media-option-btn" onclick="triggerMediaInput('gallery-input')">
+      <span class="media-option-icon">🖼️</span> Choose from Gallery
+    </button>
+    <button class="media-option-btn" onclick="triggerMediaInput('generic-file-input')">
+      <span class="media-option-icon">📁</span> Upload Files
+    </button>
+    <button class="media-cancel-btn" onclick="closeMediaMenu()">Cancel</button>
+  </div>
+</div>
+
+<script>
+  var BACKEND_URL = "/api/chat";
+
+  var lang = 'en';
+  var history = [];
+  var currentAttachedImageBase64 = null;
+  var currentAttachedImageMime = null;
+  var deferredInstallPrompt = null;
+
+  var UI = {
+    en: { placeholder: 'Type a message...', status: 'Always here for you', welcome_title: 'Hello Mum and Dad! 🧡', welcome_body: 'It\'s Gig. I\'m always here — ask me anything, tell me about your day, or just chat. I love hearing from you both! 🌸', sender_gig: 'Gig', sender_mum: 'Parents' },
+    gu: { placeholder: '\u0ab8\u0a82\u0aa6\u0ac7\u0ab6 \u0ab2\u0ec1\u0a96\u0acb...', status: '\u0ab9\u0a82\u0aae\u0ac7\u0ab6\u0abe \u0aa4\u0aae\u0abe\u0ab0\u0ac0 \u0ab8\u0abe\u0aa5\u0ac7', welcome_title: '\u0aa8\u0aae\u0ab8\u0acd\u0aa4\u0ac7 \u0aae\u0aae\u0acd\u0aae\u0ac0 \u0a85\u0aa8\u0ac7 \u0aaa\u0aaa\u0acd\u0aaa\u0abe! 🧡', welcome_body: '\u0ab9\u0ac1\u0a82 \u0a97\u0abf\u0a97 \u0a9b\u0ac1\u0a82. \u0a97\u0aae\u0ac7 \u0aa4\u0acd\u0aaf\u0abe\u0ab0\u0ac7 \u0ab5\u0abe\u0aa4 \u0a95\u0ab0\u0acb 🌸', sender_gig: '\u0a97\u0abf\u0a97', sender_mum: '\u0aa4\u0aae\u0ac7' }
+  };
+
+  var MORNING_PROMPTS = {
+    en: [
+      'Give Mum and Dad a beautiful Hindu morning blessing. Share a short mantra or shloka with simple meaning, mention which deity blesses this day, warm loving words from their son Gig. Short, heartfelt, spiritual.',
+      'Wish parents good morning with a verse from the Bhagavad Gita or a short story about Lord Krishna or Rama with a simple life lesson. Warm and loving from Gig.',
+      'Give parents a morning prayer mentioning Goddess Lakshmi or Saraswati, a short mantra with meaning. Tell them today is a blessed day. From Gig with love.',
+      'Share a morning blessing about Lord Ganesh removing all obstacles, with a short prayer and its simple meaning. Warm, hopeful and full of love from Gig to his parents.',
+      'Give a Hanuman Chalisa inspired morning message. Share a line with its meaning. Remind parents that Lord Hanuman protects and blesses them always. Warm from Gig.',
+      'Wish Mum and Dad good morning with a beautiful thought from the Ramayana about devotion from Sita, Ram or Hanuman. Simple words, big love, from Gig.',
+      'Share a morning blessing about Surya Dev and the Gayatri Mantra. Explain its meaning simply. Wish parents a radiant blessed day from Gig.'
+    ],
+    gu: [
+      '\u0aae\u0aae\u0acd\u0aae\u0ac0-\u0aaa\u0aaa\u0acd\u0aaa\u0abe\u0aa8\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0aa8\u0ac0 \u0ab9\u0abf\u0a82\u0aa6\u0ac1 \u0aa7\u0abe\u0ab0\u0acd\u0aae\u0abf\u0a95 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe \u0a86\u0aaa\u0acb. \u0ab8\u0ac1\u0a82\u0aa6\u0ab0 \u0aae\u0a82\u0aa4\u0acd\u0ab0 (\u0ab8\u0ab0\u0ab3 \u0a85\u0ab0\u0acd\u0aa5 \u0ab8\u0abe\u0aa5\u0ac7) \u0a86\u0ab6\u0ac0\u0ab0\u0acd\u0ab5\u0abe\u0aa6 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0.',
+      '\u0aad\u0a97\u0ab5\u0aa6 \u0a97\u0ac0\u0aa4\u0abe\u0aa8\u0acb \u0ab6\u0acd\u0ab2\u0acb\u0a95 \u0a85\u0aa5\u0ab5\u0abe \u0aad\u0a97\u0ab5\u0abe\u0aa5 \u0a95\u0ac3\u0ab7\u0acd\u0aa3 \u0ab5\u0abf\u0ab6\u0ac7 \u0a9f\u0ac2\u0a82\u0a95\u0ac0 \u0ab5\u0abe\u0ab0\u0acd\u0aa4\u0abe \u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0\u0aae\u0abe\u0a82 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0.',
+      '\u0aae\u0abe\u0aa4\u0abe \u0ab2\u0a95\u0acd\u0ab7\u0aae\u0ac0 \u0a85\u0aa5\u0ab5\u0abe \u0ab8\u0ab0\u0ab8\u0acd\u0ab5\u0aa4\u0ac0\u0aa8\u0abe \u0a86\u0ab6\u0ac0\u0ab0\u0acd\u0ab5\u0abe\u0aa6 \u0ab8\u0abe\u0aa5\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0aa8\u0ac0 \u0aeb\u0aad\u0acd\u0a95\u0aa4\u0abf \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0a9d\u0adf\u0abe\u0ab0 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe.',
+      '\u0aad\u0a97\u0ab5\u0abe\u0aa5 \u0a97\u0aa3\u0ac7\u0ab6 \u0ab5\u0abf\u0a98\u0acd\u0aa8\u0ab9\u0ab0\u0aad\u0acd\u0aa4\u0abe \u0a9b\u0ac7 \u0a86 \u0aad\u0abe\u0ab5 \u0ab8\u0abe\u0aa5\u0ac7 \u0aae\u0aae\u0acd\u0aae\u0ac0-\u0aaa\u0aaa\u0acd\u0aaa\u0abe\u0aa8\u0ac7 \u0ab8\u0ab5\u0abe\u0ab0\u0ac0\u0a82 \u0a86\u0ab6\u0ac0\u0ab0\u0acd\u0ab5\u0abe\u0aa6.',
+      '\u0ab9\u0aa8\u0ac1\u0aae\u0abe\u0aa8 \u0a9a\u0abe\u0ab2\u0ac0\u0ab8\u0abe\u0aa8\u0ac0 \u0aaa\u0a82\u0a95\u0acd\u0aa4\u0abf \u0a85\u0aa8\u0ac7 \u0a85\u0ab0\u0acd\u0aa5 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0 \u0ab8\u0acd\u0aa8\u0ac7\u0ab9.',
+      '\u0ab0\u0abe\u0aae\u0abe\u0aaf\u0aa3\u0aa8\u0ac0 \u0aad\u0a95\u0acd\u0aa4\u0abf \u0a9f\u0ac2\u0a82\u0a95\u0ac0 \u0a97\u0ac1\u0a9c\u0ab0\u0abe\u0aa4\u0ac0\u0aae\u0abe\u0a82 \u0a97\u0abf\u0a97 \u0aa4\u0ab0\u0aab\u0aa5\u0ac0.',
+      '\u0a97\u0abe\u0aaf\u0aa4\u0acd\u0ab0\u0ac0 \u0aae\u0a82\u0aa4\u0acd\u0ab0 \u0ab8\u0ab0\u0ab3 \u0a85\u0ab0\u0acd\u0aa5 \u0ab8\u0abe\u0aa5\u0ac7 \u0a89\u0a9c\u0acd\u0a9c\u0acd\u0ab5\u0ab3 \u0aa6\u0abf\u0ab5\u0ab8\u0aa8\u0ac0 \u0ab6\u0ac1\u0aad\u0ac7\u0a9a\u0acd\u0a9b\u0abe.'
+    ]
+  };
+
+  function openMediaMenu() { document.getElementById('media-menu-overlay').style.display = 'flex'; }
+  function closeMediaMenu() { document.getElementById('media-menu-overlay').style.display = 'none'; }
+  
+  function triggerMediaInput(inputId) {
+    closeMediaMenu();
+    document.getElementById(inputId).click();
+  }
+
+  function appendKey(char) {
+    var ta = document.getElementById('user-input');
+    ta.value += char;
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+  }
+
+  function backspaceKey() {
+    var ta = document.getElementById('user-input');
+    ta.value = ta.value.substring(0, ta.value.length - 1);
+    ta.dispatchEvent(new Event('input'));
+    ta.focus();
+  }
+
+  function showWelcome() {
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var hour = new Date().getHours();
+    var isMorning = hour >= 5 && hour < 12;
+    
+    var bannerEmblem = isMorning 
+      ? '<div style="width: 70px; height: 70px; background: linear-gradient(135deg, #FFB347, var(--terracotta)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 34px; margin: 0 auto 14px; box-shadow: 0 6px 20px rgba(184,90,56,0.15);">☀️</div>'
+      : '<div style="width: 70px; height: 70px; background: linear-gradient(135deg, var(--border), var(--terracotta)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; margin: 0 auto 14px; box-shadow: 0 6px 20px rgba(74,46,43,0.08);">💝</div>';
+    
+    msgs.innerHTML = '<div class="welcome-banner">' + bannerEmblem + '<h3>' + t.welcome_title + '</h3><p>' + t.welcome_body + '</p></div><div class="date-divider">Today</div>';
+    
+    var savedHistory = localStorage.getItem('gig_chat_history_' + lang);
+    if (savedHistory) {
+      history = JSON.parse(savedHistory);
+      history.forEach(function(msg) {
+        var bubbleRole = (msg.role === 'model') ? 'gig' : 'mum';
+        var txt = "";
+        var imgUrl = null;
+        
+        msg.parts.forEach(function(part) {
+          if (part.text) txt = part.text;
+          if (part.inlineData) imgUrl = 'data:' + part.inlineData.mimeType + ';base64,' + part.inlineData.data;
+        });
+        addBubble(bubbleRole, txt, imgUrl);
+      });
+      scrollToBottom();
+    } else {
+      history = [];
+    }
+
+    sendMorningGreeting();
+  }
+
+  function setLang(l) {
+    lang = l;
+    document.getElementById('btn-en').classList.toggle('active', l === 'en');
+    document.getElementById('btn-gu').classList.toggle('active', l === 'gu');
+    document.getElementById('user-input').placeholder = UI[l].placeholder;
+    document.getElementById('status-text').textContent = UI[l].status;
+    
+    document.getElementById('gujarati-keyboard').style.display = (l === 'gu') ? 'flex' : 'none';
+    
+    showWelcome();
+  }
+
+  function speakText(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      var utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'gu' ? 'gu-IN' : 'en-IN'; 
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  function previewImage(input) {
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      currentAttachedImageMime = input.files[0].type || "image/jpeg";
+      reader.onload = function(e) {
+        currentAttachedImageBase64 = e.target.result.split(',')[1];
+        document.getElementById('image-preview').src = e.target.result;
+        document.getElementById('preview-container').style.display = 'flex';
+        scrollToBottom();
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
+  }
+
+  function clearImagePreview() {
+    currentAttachedImageBase64 = null;
+    currentAttachedImageMime = null;
+    document.getElementById('direct-camera-input').value = "";
+    document.getElementById('gallery-input').value = "";
+    document.getElementById('generic-file-input').value = "";
+    document.getElementById('preview-container').style.display = 'none';
+  }
+
+  function formatHistoryForGemini(chatHistory) {
+    return chatHistory.map(function(msg) {
+      return {
+        role: msg.role === 'model' ? 'model' : 'user',
+        parts: msg.parts
+      };
+    });
+  }
+
+  async function sendMorningGreeting() {
+    var randomIndex = Math.floor(Math.random() * MORNING_PROMPTS[lang].length);
+    var prompt = MORNING_PROMPTS[lang][randomIndex];
+    showTyping();
+    try {
+      var initialPayload = formatHistoryForGemini(history);
+      initialPayload.push({ role: 'user', parts: [{ text: prompt }] });
+      
+      var res = await fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: initialPayload, lang: lang })
+      });
+      var data = await res.json();
+      removeTyping();
+      
+      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+        var reply = data.candidates[0].content.parts[0].text;
+        addBubble('gig', reply);
+        history.push({ role: 'model', parts: [{ text: reply }] });
+        localStorage.setItem('gig_chat_history_' + lang, JSON.stringify(history));
+      }
+    } catch(e) { removeTyping(); }
+  }
+
+  function scrollToBottom() {
+    var msgs = document.getElementById('messages');
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function addBubble(role, text, imageUrl) {
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var sender = role === 'gig' ? t.sender_gig : t.sender_mum;
+    var guClass = lang === 'gu' ? ' lang-gu' : '';
+    var row = document.createElement('div');
+    row.className = 'msg-row ' + role;
+    
+    var listenMark = role === 'gig' ? ' <button class="listen-btn" onclick="speakText(\`' + text.replace(/`/g, "\\`").replace(/\n/g, " ") + '\`)">🔊 Listen</button>' : '';
+    var imageTag = imageUrl ? '<img src="' + imageUrl + '" alt="shared asset"/>' : '';
+
+    row.innerHTML = '<div class="msg-sender">' + sender + listenMark + '</div><div class="bubble' + guClass + '">' + imageTag + escHtml(text) + '</div><div class="msg-time">' + getTime() + '</div>';
+    msgs.appendChild(row);
+    scrollToBottom();
+  }
+
+  function getTime() { return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }
+  function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br/>'); }
+
+  function showTyping() {
+    var msgs = document.getElementById('messages');
+    var t = UI[lang];
+    var el = document.createElement('div');
+    el.id = 'typing'; el.className = 'msg-row gig';
+    el.innerHTML = '<div class="msg-sender">' + t.sender_gig + '</div><div class="typing-dots"><span></span><span></span><span></span></div>';
+    msgs.appendChild(el);
+    scrollToBottom();
+  }
+
+  function removeTyping() { var el = document.getElementById('typing'); if (el) el.remove(); }
+
+  async function sendMessage() {
+    var ta = document.getElementById('user-input');
+    var text = ta.value.trim();
+    if (!text && !currentAttachedImageBase64) return;
+    
+    ta.value = ''; ta.style.height = 'auto';
+    document.getElementById('send-btn').disabled = true;
+    
+    var localImgUrl = currentAttachedImageBase64 ? 'data:' + currentAttachedImageMime + ';base64,' + currentAttachedImageBase64 : null;
+    addBubble('mum', text, localImgUrl);
+    
+    var userParts = [];
+    if (currentAttachedImageBase64) {
+      userParts.push({
+        inlineData: {
+          mimeType: currentAttachedImageMime,
+          data: currentAttachedImageBase64
+        }
+      });
+    }
+    userParts.push({ text: text });
+    
+    history.push({ role: 'user', parts: userParts });
+    localStorage.setItem('gig_chat_history_' + lang, JSON.stringify(history));
+    
+    clearImagePreview();
+    showTyping();
+    
+    try {
+      var formattedHistory = formatHistoryForGemini(history);
+      
+      var res = await fetch(BACKEND_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: formattedHistory, lang: lang })
+      });
+      
+      var data = await res.json();
+      removeTyping();
+      
+      if (data.error) {
+        addBubble('gig', 'Something went wrong. Try again in a moment!');
+        document.getElementById('send-btn').disabled = false;
+        return;
+      }
+      
+      var reply = '...';
+      if (data.candidates && data.candidates[0] && data.candidates[0].content) {
+        reply = data.candidates[0].content.parts[0].text;
+      }
+      
+      addBubble('gig', reply);
+      history.push({ role: 'model', parts: [{ text: reply }] });
+      localStorage.setItem('gig_chat_history_' + lang, JSON.stringify(history));
+    } catch(e) {
+      removeTyping();
+      addBubble('gig', 'Could not connect. Check your internet and try again!');
+    }
+    
+    document.getElementById('send-btn').disabled = false;
+    ta.focus();
+  }
+</script>
+</body>
+</html>
